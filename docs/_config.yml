@@ -13,15 +13,15 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: MobilePay Invoice
+title: MobilePay Marketplace
 #email: your-email@example.com
-description: MobilePay Invoice API documentation.
-base_url: "https://mobilepaydev.github.io/MobilePay-Invoice/" # the subpath of your site, e.g. /blog
+description: MobilePay Marketplace Seller API documentation.
+base_url: "https://mobilepaydev.github.io/MobilePay-Marketplace/" # the subpath of your site, e.g. /blog
 
 show_downloads: false
 # Build settings
 #markdown: kramdown
-repository: MobilePayDev/MobilePay-Invoice
+repository: MobilePayDev/MobilePay-Marketplace
 theme: jekyll-theme-minimal
 plugins:
   - jekyll-feed

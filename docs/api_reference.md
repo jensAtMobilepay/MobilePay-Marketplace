@@ -2,714 +2,189 @@
 layout: default
 ---
 
-## Web API Reference
+## MobilePay API Reference
 
-### <a name="direct"/> InvoiceDirect
+This page contains information about the MobilePay Marketplace API that Sellers can use to add and remove their products from the Marketplace.
 
-High level `InvoiceDirect` flow diagram
+### <a name="product"/> Product
 
-[![](assets/images/Invoice_direct_high_level_flow_diagram.png)](Invoice_direct_high_level_flow_diagram.png)
+#### <a name="add_product"/> Add Product
 
-#### Create InvoiceDirect
-
-You can create an invoice directly to MobilePay app. Notice that request require a customer mobile phone number, name and surname. Check how invoice looks in the app [here](visual_examples).
+You can add a product to the Marketplace. After a new product has been added, the product will need to be manually added by a MobilePay Marketplace Admin before it will show up on the Marketplace in the MobilePay App.
 
 ```
-POST api/v1/merchants/{merchantId}/invoices
+POST api/v1/marketplace/seller/products
 ```
 
-##### <a id="single-invoice-request" name="single_invoice_object"/> Input
+##### <a id="add-product-request" name="add_product_object"/> Input
 
 |Parameter             |Sub Parameter |Type        |Description |
 |----------------------|--------------|------------|------------|
-|`InvoiceIssuer`       ||`guid`| **Required.** The ID of the invoicing department/branch of the merchant.                                   |
-|`ConsumerAlias`       ||`object`| **Required.** Mobile alias of the MobilePay user to be invoiced.                                                 |
-||`Alias`|`string`|**Required.** Mobile phone number of the MobilePay user. Should start with a '+' sign and country phone code. <br/> E.g. +4512345678 or +35812345678                          |
-||`AliasType`|`string` | **Required.** Alias type of the MobilePay user. <br/> Only value allowed is `Phone`.                                                            |
-|`ConsumerName`      |              |`string`      |Full name of the MobilePay user.|
-|`TotalAmount`       |              |`decimal`     |**Required.** The requested amount to be paid. <br/> >0.00, decimals separated with a dot.|
-|`TotalVatAmount`    |              |`decimal`     |**Required.** VAT amount. Decimals separated with a dot.                                  |
-|`CountryCode`       |              |`string(2)`   |**Required.** Country code. Either `DK` or `FI` is allowed.                             |
-|`CurrencyCode`      |              |`string(3)`   |**Required.** Currency code. If you set `CountryCode` as `DK` then it should be `DKK`. If you set `CountryCode` as `FI` then it should be `EUR`.|
-|`ConsumerAddressLines`|            |`string[]`      |Address of consumer receiving the invoice.                                |
-|`DeliveryAddressLines`|            |`string[]`      |Delivery address.                                                                       |
-|`InvoiceNumber`     |              |`string`      |**Required.** Invoice number. It will be used if PaymentReference is not filled.                                                           |
-|`IssueDate`         |              |`date`        |**Required.** Issue date of invoice. ISO date format: `YYYY-MM-DD`                      |
-|`DueDate`           |              |`date`        |**Required.** Payment due date. Must be between today and 400 days ahead, otherwise the request will be declined. ISO date format: `YYYY-MM-DD`|
-|`OrderDate`         |              |`date`        |**Required.** Order date of invoice. ISO date format: `YYYY-MM-DD`                      |
-|`DeliveryDate`      |              |`date`        |**Required.** Delivery date of invoice. ISO date format: `YYYY-MM-DD`                   |
-|`Comment`           |              |`string`      |Additional information to the consumer.                                                 |
-|`MerchantContactName`|             |`string`      |Contact name for the individual who issued the invoice.                                 |
-|`MerchantOrderNumber`|             |`string`      |The merchant order number for the invoice used internally by the merchant.              |
-|`BuyerOrderNumber`|                |`string`        |The buyer order number for the invoice used externally by the merchant.               |
-|`PaymentReference`  |              |`string(60)*`  |Reference used on the payment to do reconciliation if merchant has chosen Instant Transfer method. If not filled, InvoiceNumber will be used as reference.|
-|`InvoiceUrl`  |              |`string`  |URL to the Invoice PDF provided by merchant.|
-|`InvoiceArticles` |            |`array`      |**At least one is required.**                                                                |
-|    |`ArticleNumber`           |`string`     |**Required.** Article Number, e.g. 123456ABC                                                 |
-|    |`ArticleDescription`      |`string`     |**Required.** Article Description.                                                           |
-|    |`VATRate`                 |`decimal`    |**Required.** VAT Rate of article.                                                            |
-|    |`TotalVATAmount`          |`decimal`    |**Required.** Total VAT amount of article. Decimals separated with a dot.                                                    |
-|    |`TotalPriceIncludingVat`  |`decimal`    |**Required.** Total price of article including VAT.                                          |
-|    |`Unit`                    |`string`     |**Required.** Unit, e.g. Pcs, Coli.                                                          |
-|    |`Quantity`                |`decimal`    |**Required.** Quantity of article. Allowed to have more than two decimal digits.             |
-|    |`PricePerUnit`            |`decimal`    |**Required.** Price per unit. Allowed to have more than two decimal digits.                  |
-|    |`PriceReduction`          |`decimal`    |**Required.** Price reduction.                                                                             |
-|    |`PriceDiscount`           |`decimal`    |**Required.** Price discount.                                                                              |
-|    |`Bonus`                   |`decimal`    |**Required.** Bonus of article.                                                                            |
+|`sellersProductReference`       ||`string`| **Required.** Reference to the product in ther Sellers internal system. |
+|`productConfiguration`       ||`object`| **Required.** Options for how the User can configure the Product before buying it. |
+||`type`|`string`|**Required.** Type of product configuration. Either `StepAmount` for gift cards with a specific monetary value allowing User to control the value on the gift card, or `StepQuantity` to instead let the User purchase multiple of the fixed-value product. |
+||`maximum`|`integer` | **Required.** The maximum amount that the monetary gift card can be on, or the maximum quantity that the User can buy depending on `type`.|
+||`minimum`|`integer`|**Required.** The minimum amount that the monetary gift card can be on, or the minium quantity that the User can buy depending on `type`.|
+||`default`|`integer`|**Required.** The default amount that the monetary gift card is set to for the User, or the default quantity depending on `type`.|
+||`stepSize`|`integer`|**Required.** The step size of increments or decrements in Users chosen amount or quantity based on `type`.|
+||`pricePerUnit`|`decimal`|**Required.** The price per product in local market currency. For `StepAmount` this should be set to `1`.|
+||`vatPerUnit`|`decimal`|**Required.** The VAT per product in local market currency. For `StepAmount` this should be set to `0`.|
+|`localizations`      ||`object[]`      | List of product text localizations. Must contain required languages as stated under Market.|
+||`language`|`string(5)`|**Required.** Langauge of the given localization. `DA_DK`, `EN_DK`, `FI_FI` or `EN_FI`.|
+||`title`|`string`|**Required.** Title of the product. |
+||`subtitle`|`string`|**Required.** Subtitle of the product. |
+||`descriptionBuyer`|`string`|**Required.** Description of the product shown to the buyer. |
+||`descriptionRecipient`|`string`|**Required.** Description of the product shown to the recipient of the product. |
+||`merchantProductUrl`|`string`| Url to the product on the Sellers website. |
+|`coverImages`||`object[]`|**Required.** List of images to be used as cover images for the product |
+||`x2Url`|`string`|**Required.** Url to image in resolution: W: 720px H: 450px |
+||`x3Url`|`string`|**Required.** Url to image in resolution: W: 1080px H: 675px |
+||`x4Url`|`string`|**Required.** Url to image in resolution: W: 1440px H: 900px |
+|`tileImage`||`object`|**Required.** Image to be used on the product tiles on the Marketplace |
+||`x2Url`|`string`|**Required.** Url to image in resolution: W: 384px H: 256px |
+||`x3Url`|`string`|**Required.** Url to image in resolution: W: 576px H: 384px |
+||`x4Url`|`string`|**Required.** Url to image in resolution: W: 768px H: 512px |
+|`productImage`||`object`|**Required.** Image to be shown as small illustration of the product |
+||`x2Url`|`string`|**Required.** Url to image in resolution: W: 50px H: 20px |
+||`x3Url`|`string`|**Required.** Url to image in resolution: W: 75px H: 50px |
+||`x4Url`|`string`|**Required.** Url to image in resolution: W: 100px H: 60px |
+|`validityFromPurchase`||`object`|**Required.** Period that the product is valid from purchase date. Only one of the values can be set, the rest should be 0.|
+||`days`|`integer`|**Required.** Validty from purchase date in days.|
+||`months`|`integer`|**Required.** Validty from purchase date in months. |
+||`years`|`integer`|**Required.** Validty from purchase date in years. |
+| `campaignStartDate` || `date`| A specific date and time when the product is allowed to be sold. If not provided, the `Product` may be made available instantly. |
+| `campaignEndDate` || `date`| A specific date and time when the product is no longer allowed to be sold. If not provided, the `Product` will continue to be available until manually removed. |
 
 <div class="note">
-    <strong>Note:</strong>
-    <p>
-        * Even though "PaymentReference" can contain up to 60 symbols the recommendation is to use up to 30 symbols. For instant transfers "PaymentReference" will be truncated up down to 30 symbols and included in bank statement.
-    </p>
+  <strong>Note:</strong> Products can not be updated at the moment. Instead the old product should be deleted and a new one created.
 </div>
 
 ##### Example
-
+Request
 ```json
 {
-  "InvoiceIssuer": "efd08c19-24cf-4833-a4a4-bfa7bd58fbb2",
-  "ConsumerAlias": {
-    "Alias": "+4577007700",
-    "AliasType": "Phone"
-  },
-  "ConsumerName": "Consumer Name",
-  "TotalAmount": 360,
-  "TotalVATAmount": 72,
-  "CountryCode": "DK",
-  "CurrencyCode": "DKK",
-  "ConsumerAddressLines": [
-    "Paradisæblevej 13",
-    "CC-1234 Andeby", 
-    "WONDERLAND"
-  ],
-  "DeliveryAddressLines": [
-    "Østerbrogade 120",
-    "CC-1234 Andeby",
-    "WONDERLAND"
-  ],
-  "InvoiceNumber": "301",
-  "IssueDate": "2018-02-12",
-  "DueDate": "2018-03-12",
-  "OrderDate": "2018-02-05",
-  "DeliveryDate": "2018-02-10",
-  "Comment": "Any comment",
-  "MerchantContactName": "Snowboard gear shop",
-  "MerchantOrderNumber": "938",
-  "BuyerOrderNumber": "631",
-  "PaymentReference": "186",
-  "InvoiceArticles": [
+ "sellersProductReference": "456879809+",
+ "productConfiguration": {
+ "type": "StepQuantity",
+ "maximum": 10,
+ "minimum": 1,
+ "default": 1,
+ "stepSize": 1,
+ "pricePerUnit": 300.00,
+ "vatPerUnit": 0.75
+ },
+ "localizations": [
     {
-      "ArticleNumber": "1-123",
-  "ArticleDescription": "Process Flying V Snowboard",
-      "VATRate": 25,
-      "TotalVATAmount": 72,
-      "TotalPriceIncludingVat": 360,
-      "Unit": "1",
-      "Quantity": 1,
-      "PricePerUnit": 288,
-      "PriceReduction": 0,
-      "PriceDiscount": 0,
-      "Bonus": 5
-    }      
-  ]
+        "language": "DA_DK",
+        "title": "Brunch menu for 2 på Edwin Rahrs Café",
+        "subtitle": "Lækker og forførende brunchoplevelse i smukke omgivelser",
+        "descriptionBuyer": "Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Modtager af gavekortet kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:\n\t• Rundstykker\n\t• Croissanter\n\t• Nutellamader\n\t• Der er altid gratis kaffe på kanden.",
+        "descriptionRecipient": "Tillykke med dit gavekort til Edwin Rahrs Café. Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Du kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:\n\t• Rundstykker\n\t• Croissanter\n\t• Nutellamader\n\t• Der er altid gratis kaffe på kanden.",
+        "merchantProductUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    },
+    {
+        "language": "EN_DK",
+        "title": "Brunch for 2 on Edwin Rahrs Café",
+        "subtitle": "Delicious and tempting brunch experience in a beautiful environment",
+        "descriptionBuyer": "Congrats med dit gavekort til Edwin Rahrs Café. Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Du kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:\n\t• Rundstykker\n\t• Croissanter\n\t• Nutellamader\n\t• Der er altid gratis kaffe på kanden",
+        "descriptionRecipient": "Congrats med dit gavekort til Edwin Rahrs Café. Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Du kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:\n\t• Rundstykker\n\t• Croissanter\n\t• Nutellamader\n\t• Der er altid gratis kaffe på kanden",
+        "merchantProductUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    }
+ ],
+ "coverImages": [
+    {
+        "x2Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
+        "x3Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
+        "x4Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png"
+    }
+ ],
+ "tileImage": {
+    "x2Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
+    "x3Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
+    "x4Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png"
+ },
+ "productImage": {
+    "x2Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
+    "x3Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
+    "x4Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png"
+ },
+ "validityFromPurchase": {
+    "days": 0,
+    "months": 0,
+    "years": 2
+ }
 }
 ```
 
 Response
 
 ```
-HTTP 202 Accepted
-```
-```json
-{
-    "InvoiceId" : "63679ab7-cc49-4f75-80a7-86217fc105ea"
-}
-```
-<div class="note">
-Note: If not accepted, invoice will expire 30 days after due date.
-</div>
-
-#### <a name="create_multiple_invoicedirect"/> Create multiple invoices 
-```
-POST api/v1/merchants/{merchantId}/invoices/batch
-```
-
-You can create up to 2000 invoices per single batch.
-
-##### Input (an array of <a href="#single_invoice_object">objects</a> used to create single invoice)
-```json
-[
-  {
-     // InvoiceDirect input
-  },
-  {
-     // InvoiceDirect input
-  },
-  ...
-]
-```
-##### Response
-```
-HTTP 202 Accepted
-```
-```json
-{
-  "Accepted": [
-    {
-      "InvoiceNumber": "<original invoice number sent by the merchant>",
-      "InvoiceId": "66119129-aaf7-4ad0-a5b1-62382932b5c6"
-    },
-    {
-      "InvoiceNumber": "<original invoice number sent by the merchant>",
-      "InvoiceId": "5e3030a3-61ff-4143-a6bd-8457a09bcb0d"
-    },
-    ...
-  ],
-  "Rejected": [
-    {
-      "InvoiceNumber": "<original invoice number sent by the merchant>",
-      "ErrorText": "<description of error>",
-      "ErrorCode": 10504
-    },
-    ...
-  ]
-}
-```
-
-<div class="note">
-<strong>Note:</strong> When multiple invoices are sent, most of the validation is applied asynchronously. The result are sent via <a href="/callbacks">callbacks</a>.
-</div>
-
-### <a name="link"/> InvoiceLink
-
-High level `InvoiceLink` flow diagram
-
-[![](assets/images/Invoice_link_high_level_flow_diagram.png)](Invoice_link_high_level_flow_diagram.png)
-
-#### Create InvoiceLink
-
-You can create an invoice and receive a link. That link can be sent to the user by any channel like email, sms, etc. and user can choose to pay with MobilePay. Check `InvoiceLink` flows and how invoice looks in the app [here](visual_examples#link-flows).
-
-<div class="note">
-Note: Request does not require a <code>ConsumerAlias</code>. It's because InvoiceLink can be paid by any MobilePay user.
-</div>
-
-```
-POST api/v1/merchants/{merchantId}/invoices/link
-```
-
-##### <a id="invoice-link-request" name="single_invoicelink_object"/> Input
-
-|Parameter             |Sub Parameter |Type        |Description |
-|----------------------|--------------|------------|------------|
-|`InvoiceIssuer`       ||`guid`| **Required.** The ID of the invoicing department/branch of the merchant.                                   |
-|`ConsumerAlias`       ||`object`|Mobile alias of the MobilePay user to be invoiced.                                                 |
-||`Alias`|`string`|Mobile phone number of the MobilePay user. Should start with a '+' sign and country phone code. <br/> E.g. +4512345678 or +35812345678                          |
-||`AliasType`|`string` |Alias type of the MobilePay user. This will be autofilled in the landing page if user opens the link not on the phone <br/> Only value allowed is `Phone`.                                                            |
-|`ConsumerName`      |              |`string`      |Full name of the MobilePay user.|
-|`TotalAmount`       |              |`decimal`     |**Required.** The requested amount to be paid. <br/> >0.00, decimals separated with a dot.|
-|`TotalVatAmount`    |              |`decimal`     |**Required.** VAT amount. Decimals separated with a dot.                                  |
-|`CountryCode`       |              |`string(2)`   |**Required.** Country code. Either `DK` or `FI` is allowed.                             |
-|`CurrencyCode`      |              |`string(3)`   |**Required.** Currency code. If you set `CountryCode` as `DK` then it should be `DKK`. If you set `CountryCode` as `FI` then it should be `EUR`.|
-|`ConsumerAddressLines`|            |`string[]`    |Address of consumer receiving the invoice.                                |
-|`DeliveryAddressLines`|            |`string[]`    |Delivery address.                                                                       |
-|`InvoiceNumber`     |              |`string`      |**Required.** Invoice number.                                                           |
-|`IssueDate`         |              |`date`        |**Required.** Issue date of invoice. ISO date format: `YYYY-MM-DD`                      |
-|`DueDate`           |              |`date`        |**Required.** Payment due date. Must be between today and 400 days ahead, otherwise the request will be declined. ISO date format: `YYYY-MM-DD`|
-|`OrderDate`         |              |`date`        |**Required.** Order date of invoice. ISO date format: `YYYY-MM-DD`                      |
-|`DeliveryDate`      |              |`date`        |**Required.** Delivery date of invoice. ISO date format: `YYYY-MM-DD`                   |
-|`Comment`           |              |`string`      |Additional information to the consumer.                                                 |
-|`MerchantContactName`|             |`string`      |Contact name for the individual who issued the invoice.                                 |
-|`MerchantOrderNumber`|             |`string`      |The merchant order number for the invoice used internally by the merchant.              |
-|`BuyerOrderNumber`|                |`string`      |The buyer order number for the invoice used externally by the merchant.               |
-|`PaymentReference`  |              |`string(60)*`  |Reference used on the payment to do reconciliation. If not filled, invoice number will be used as reference.|
-|`InvoiceUrl`  |              |`string`  |URL to the Invoice PDF provided by merchant.|
-|`InvoiceArticles` |            |`array`      |**At least one is required.**                                                                |
-|    |`ArticleNumber`           |`string`     |**Required.** Article Number, e.g. 123456ABC                                                 |
-|    |`ArticleDescription`      |`string`     |**Required.** Article Description.                                                           |
-|    |`VATRate`                 |`decimal`    |**Required.** VAT Rate of article.                                                           |
-|    |`TotalVATAmount`          |`decimal`    |**Required.** Total VAT amount of article. Decimals separated with a dot.                                                   |
-|    |`TotalPriceIncludingVat`  |`decimal`    |**Required.** Total price of article including VAT.                                          |
-|    |`Unit`                    |`string`     |**Required.** Unit, e.g. Pcs, Coli.                                                          |
-|    |`Quantity`                |`decimal`    |**Required.** Quantity of article. Allowed to have more than two decimal digits.                                                           |
-|    |`PricePerUnit`            |`decimal`    |**Required.** Price per unit. Allowed to have more than two decimal digits.                                                                |
-|    |`PriceReduction`          |`decimal`    |**Required.** Price reduction.                                                                             |
-|    |`PriceDiscount`           |`decimal`    |**Required.** Price discount.                                                                              |
-|    |`Bonus`                   |`decimal`    |**Required.** Bonus of article.                                                                            |
-
-<div class="note">
-    <strong>Note:</strong>
-    <p>
-        * Even though "PaymentReference" can contain up to 60 symbols the recommendation is to use up to 30 symbols. For instant transfers "PaymentReference" will be truncated up down to 30 symbols and included in bank statement.
-    </p>
-</div>
-
-##### Example
-
-```json
-{
-  "InvoiceIssuer": "efd08c19-24cf-4833-a4a4-bfa7bd58fbb2",
-  "ConsumerAlias": {
-    "Alias": "+4577007700",
-    "AliasType": "Phone"
-  },
-  "ConsumerName": "Consumer Name",
-  "TotalAmount": 360,
-  "TotalVATAmount": 72,
-  "CountryCode": "DK",
-  "CurrencyCode": "DKK",
-  "ConsumerAddressLines": [
-    "Paradisæblevej 13",
-    "CC-1234 Andeby", 
-    "WONDERLAND"
-  ],
-  "DeliveryAddressLines": [
-    "Østerbrogade 120",
-    "CC-1234 Andeby",
-    "WONDERLAND"
-  ],
-  "InvoiceNumber": "301",
-  "IssueDate": "2018-02-12",
-  "DueDate": "2018-03-12",
-  "OrderDate": "2018-02-05",
-  "DeliveryDate": "2018-02-10",
-  "Comment": "Any comment",
-  "MerchantContactName": "Snowboard gear shop",
-  "MerchantOrderNumber": "938",
-  "BuyerOrderNumber": "631",
-  "PaymentReference": "186",
-  "InvoiceArticles": [
-    {
-      "ArticleNumber": "1-123",
-      "ArticleDescription": "Process Flying V Snowboard",
-      "VATRate": 25,
-      "TotalVATAmount": 72,
-      "TotalPriceIncludingVat": 360,
-      "Unit": "1",
-      "Quantity": 1,
-      "PricePerUnit": 288,
-      "PriceReduction": 0,
-      "PriceDiscount": 0,
-      "Bonus": 5
-    }      
-  ]
-}
-```
-
-##### Response
-```
-HTTP 202 Accepted
-```
-```json
-{
-    "InvoiceId": "c5d4fde3-81e2-49de-8cfe-8c96f449e367",
-    "Links": [
-        {
-            "Rel": "user-redirect",
-            "Href":"https://api.sandbox.mobilepay.dk/invoice-restapi/api/v1/consumers/me/invoices/invoices/c5d4fde3-81e2-49de-8cfe-8c96f449e367/link"
-        }
-    ]
-}
-```
-
-#### <a name="create_multiple_invoice_links"/> Create multiple invoice links
-
-```
-POST api/v1/merchants/{merchantId}/invoices/link/batch
-```
-
-You can create up to 2000 invoice links per single batch.
-
-##### Input (an array of <a href="single_invoicelink_object">objects</a> used to create single invoice link)
-```json
-[
-  {
-    InvoiceLink input,
-  },
-  {
-    InvoiceLink input,
-  },
-  ...
-]
-```
-
-##### Response
-```
-HTTP 202 Accepted
-```
-```json
-{
-  "Accepted": [
-    {
-      "InvoiceNumber": "<original invoice number sent by the merchant>",
-      "InvoiceId": "66119129-aaf7-4ad0-a5b1-62382932b5c6"
-    },
-    {
-      "InvoiceNumber": "<original invoice number sent by the merchant>",
-      "InvoiceId": "5e3030a3-61ff-4143-a6bd-8457a09bcb0d"
-    },
-    ...
-  ],
-  "Rejected": [
-    {
-      "InvoiceNumber": "<original invoice number sent by the merchant>",
-      "ErrorText": "<description of error>",
-      "ErrorCode": 10504
-    },
-    ...
-  ]
-}
-```
-
-<div class="note">
-Note: The success response is not much different from the regular, non-batch response, but 
-it doesn't contain the link itself. This is because we are processing batches asynchronously and can't return an immediate result. The <code>InvoiceLink</code> URLs will be sent back to you via a <a href="callbacks">callback</a>, as soon as they're created.
-</div>
-
-### <a name="canceling"/> Cancel invoice
-You can cancel an invoice which has not yet been paid, rejected and has not expired.
-```
-PUT api/v1/merchants/{merchantId}/invoices/{invoiceId}/cancel
-```
-
-##### Response
-```
-HTTP 204 No Content
-```
-
-### <a name="get-details"/> Get invoice details
-
-```
-GET api/v1/merchants/{merchantId}/invoices/{invoiceId}
-```
-##### Response
-
-```
 HTTP 200 OK
 ```
 ```json
 {
-    "InvoiceId": "578a9f10-4e81-4265-bbae-2e8fa33cb83b",
-    "InvoiceNumber": "301",
-    "IssueDate": "2018-07-02",
-    "DueDate": "2018-08-02",
-    "PaymentDate": "2018-08-23",
-    "Comment": "Sample Invoice",
-    "InvoiceArticles": [
-        {
-          "ArticleNumber": "1-123",
-          "ArticleDescription": "Process Flying V Snowboard",
-          "TotalPriceIncludingVat": 360,
-          "Quantity": 1,
-          "PricePerUnit": 288
-        }
-    ],
-    "CurrencyCode": "DKK",
-    "TotalAmount": 360,
-    "InvoiceVatTotals": [
-        {
-            "VatRate": 25,
-            "TotalVatAmount": 72
-        }
-    ],
-    "TotalVatAmount": 72,
-    "TotalAmountExcludingVat": 288,
-    "MerchantId": "f3dd9011-d930-4063-901d-2a47621e5b76",
-    "InvoiceIssuerId": "238fe387-f4a4-40e7-ae8a-4c107da2c0ad",
-    "InvoiceIssuerName": "Invoice Issuer 1",
-    "InvoiceIssuerAddress": "Edwin Rahrs Vej 2-12",
-    "InvoiceIssuerZipcode": "8220",
-    "InvoiceIssuerCity": "Brabrand",
-    "MerchantIsoCountryCode": "DK",
-    "LogoUrl": "https://api.qa.mobilepay.dk/invoice-restapi/api/v1/invoiceissuers/238fe387-f4a4-40e7-ae8a-4c107da2c0ad/logo",
-    "Status": "created",
-    "InvoiceUrl":"https://api.merchant.dk/invoice/578a9f10-4e81-4265-bbae-2e8fa33cb83b/pdf",
-    "PaymentTransactionId": "d1da2195-01c1-4981-bdde-04eb82e362ab"
+    "ProductId" : "63679ab7-cc49-4f75-80a7-86217fc105ea"
 }
 ```
 
-### <a name="get-status"/> Get invoice status
+#### Get Products
+
+You can query a specific product that you have added to the Marketplace:
 
 ```
-GET api/v1/merchants/{merchantId}/invoices/{invoiceId}/status
+GET api/v1/marketplace/seller/products/{productId}
 ```
-##### Response
 
+Or list all products owned by you:
+
+```
+GET api/v1/marketplace/seller/products
+```
+
+Response
 ```
 HTTP 200 OK
-```
-```json
-{
-    "InvoiceId" : "5e1210f9-4153-4fc3-83ec-2a8fc4843ea6",
-    "Status" : "created"
-}
-```
-
-The table below shows all possible statuses.
-
-|Status       | Explanation                                                 | Type         |
-|-------------|-------------------------------------------------------------|--------------|
-|`created`    |_Merchant created the Invoice_                               | Intermediate |
-|`invalid`    |_Invoice validation failed_                                  | Intermediate |
-|`accepted`   |_User swiped to accept the Invoice_                          | Intermediate |
-|`paid`       |_Invoice was paid_                                           | Final        |
-|`rejected`   |_User rejected the Invoice_                                  | Final        |
-|`expired`    |_User did not do do anything until Invoice DueDate + 30 days_| Final        |
-|`canceled`   |_You canceled this invoice._                                 | Final        |
-
-User accepts the invoice and then pays it immediately or schedules a future payment. The user can change the date, for when the invoice should be paid in the MobilePay app, but nor more than 30 days from the DueDate. For InvoiceLink to be in `rejected` state, the user needs to have first `accepted` the invoice and scheduled for a future payment. Afterwards, it is possible for the user to reject the invoice. 
-
-There are two validation steps :  
-1. Merchant validation: If all is good, then MobilePay create the invoice, send the callback `created` to the merchant, and push message to the user. The outcome of this validation is that the Invoice is `created` and delivered to the user, or the Invoice failed to be `created`, and is returned to the merchant. If the validation fails, then MobilePay does not create invoice as an entity in MobilePay domain, so in a way it is kinda a final state. 
-
-
-2. User validation: Card validation, user status.. etc. The invoice is delivered to the user, when the merchant received callback about `created` invoice. The outcome of this validation is either that the Invoice is `paid` or an error message is returned in the app.   
-
-
-The first state is either `created` or `invalid`. If you received a callback with status `created` then the Invoice has been delivered to the user. 
-
-Invoice status flow can be visualized by the following diagram.
-
-[![](assets/images/invoice_flow.png)](assets/images/invoice_flow.png)
-
-### <a name="direct-invoice-consent"/> User consent for InvoiceDirect
-
-Goal of this functionality is for Invoice Issuer to ask users phone number and consent to receive Invoices directly to MobilePay (InvoiceDirect).
-
-#### Attach a request of consent to send direct invoices to a particular invoice
-
-You can request for consent to send `InvoiceDirect` to a payer with particular invoice. Consent window is displayed to the user after `InvoiceLink` is paid. If user has already granted consent to the invoice issuer, consent window will not be displayed to the user.
-
-```
-POST api/v1/directinvoiceconsents
-```
-##### <a name="request_direct_invoice_consent_object"/> Input
-
-|Parameter             |Type        |Description |
-|----------------------|------------|------------|
-|`InvoiceId`       |`guid`| **Required.** The ID of the invoice to which consent request will be attached.|
-
-##### Example
-
-```json
-{
-  "invoiceId": "c0b6e35d-9dfb-47d4-9c9c-1cdfd181e0a4"
-}
-```
-
-##### Response
-
-```
-HTTP 201 Created
-```
-```json
-{
-  "ConsentId": "e518e841-c058-422c-b8d9-d4d71bf671c4",
-  "InvoiceId": "c0b6e35d-9dfb-47d4-9c9c-1cdfd181e0a4",
-  "PhoneNumber": null,
-  "State": "Pending"
-}
-```
-
-#### Get all consents in specified state
-
-You will get full list of users who granted consent for specific invoice issuer. Users phone number will be provided too.
-
-```
-GET /api/v1/directinvoiceconsents
-```
-##### <a name="get_direct_invoice_consents_object"/> Input (query string parameters)
-
-|Parameter             |Type        |Description |
-|----------------------|------------|------------|
-|`InvoiceIssuerId`|`string(guid)`| **Required.** The ID of the invoicing department/branch of the merchant.|
-|`State`|`string`| **Required.** State of consents to return.|
-|`PagingState`|`string`|Optional.|
-
-The table below shows all possible consent statuses.
-
-|Status       | Explanation                                                 | Type         |
-|-------------|-------------------------------------------------------------|--------------|
-|`pending`    |_User has not made an action regarding this consent_| Intermediate |
-|`granted`    |_User has granted direct invoice consent_| Final |
-|`denied`   |_User has denied direct invoice consent_| Final |
-
-##### Example
-
-```
-GET /api/v1/directinvoiceconsents?invoiceIssuerId=6bb6aff1-b88b-455a-a0ad-c4d1fec2e5d7&state=granted
-```
-
-##### Response
-
-```
-HTTP 200 OK
-```
-```json
-{
-  "GrantedConsents": [
-    {
-      "ConsentId": "e518e841-c058-422c-b8d9-d4d71bf671c4",
-      "InvoiceId": "c0b6e35d-9dfb-47d4-9c9c-1cdfd181e0a4",
-      "PhoneNumber": "+4577007700",
-      "State": "Granted"
-    }
-  ],
-  "PagingState": null
-}
 ```
 <div class="note">
-Note: Endpoint supports only granted status.
+  <strong>Note:</strong> Response model is not fixed and is only meant for debugging and verification. If you would like to use this programatically, let your contact at MobilePay know.
 </div>
 
-#### Get consent details
+#### Remove Product
 
-You can check state of your specific request - if user granted/denied consent with that request or maybe request is still pending.
+You can remove a product from the Marketplace. As Users can schedule purchases out in the future, expect that your removed product will still be purchased. Removing it from the Marketplace simply means no new Users can find and purchase the product when browsing the Marketplace.
 
 ```
-GET /api/v1/directinvoiceconsents/{consentId}
+DELETE api/v1/marketplace/seller/products/{productId}
 ```
-
 ##### Example
 
-```
-GET /api/v1/directinvoiceconsents/e518e841-c058-422c-b8d9-d4d71bf671c4
-```
-
-##### Response
+Response
 
 ```
 HTTP 200 OK
 ```
-```json
-{
-  "ConsentId": "e518e841-c058-422c-b8d9-d4d71bf671c4",
-  "InvoiceId": "c0b6e35d-9dfb-47d4-9c9c-1cdfd181e0a4",
-  "PhoneNumber": "+4577007700",
-  "State": "Pending"
-}
-```
 
-`DirectInvoiceConsent` flow in application
+### <a name="general"/> General
 
-[![](assets/images/User_consent_flow _invoice.png)](assets/images/User_consent_flow _invoice.png)
+#### Market
 
-[![](assets/images/invoice_link_to_invoice_direct.png)](assets/images/invoice_link_to_invoice_direct.png)
+The MobilePay Marketplace operates with different Markets, one for Denmark (`DK`) and one for Finland (`FI`). Products are not shared across Markets. All prices are in `DKK` for `DK` market and `EUR` for `FI` market.
 
-### <a name="error-codes"/> Error Codes
+#### Localizations
+Some requests feature a `localizations` list. This list must contain the following required languages for their respective market as shown below.
 
-All of the endpoints described above can return an error response of this structure:
+* `DK` market
+  * `DA_DK`: Translations in Danish language
+  * `EN_DK`: Translations in English language
+* `FI` market
+  * `FI_FI`: Translations in Finish language
+  * `EN_FI`: Translations in English language
 
-|Name                |Type    | Description                                                               |
-|--------------------|--------|---------------------------------------------------------------------------|
-|`correlation_id`    |`guid`  | Unique id used for logging and debugging purposes.                        |
-|`error`             |`string`| Error type. Possible values: `DomainError`, `InputError` & `ServerError`. |
-|`error_code`        |`string`| Unique error code.                                                        |
-|`error_description` |`string`| Human-friendly error description.                                         |
-|`error_context`     |`string`| Identifies context in which error has occured.                            |
+#### Currencies
+Currencies are determined automatically by the Market. 
+* `DK` Market uses `DKK`
+* `FI` Market uses `EUR`
 
-1. `HTTP 400` , if request input is invalid
->
-  ```json
-  {
-      "correlation_id": "54ccc98b-7d9f-40ea-8c1a-249d57126c39",
-      "error": "InputError",
-      "error_code": null,
-      "error_description": "input.TotalAmount : Invalid input\r\n",
-      "error_context": "Invoices"
-  }
-  ```
-
-2. `HTTP 409` , request is not compatible with a current state
->
-  ```json
-  {
-      "correlation_id": "8c153279-98f1-4e33-b053-3c6e3555adff",
-      "error": "DomainError",
-      "error_code": "10504",
-      "error_description": "Invoice has already been paid",
-      "error_context": "Invoices"
-  }
-  ```
-
-3. `HTTP 500` , server error
->
-  ```json
-  {
-      "correlation_id": "56db684c-7845-4abf-9f19-5632a625a47b",
-      "error": "ServerError",
-      "error_code": null,
-      "error_description": "The given key was not present in the dictionary.",
-      "error_context": "Invoices"
-  }
-  ```
-
-When creating `InvoiceDirect` or `InvoiceLink` these values can be returned as `error_code` and `error_description`:
-
-|Error Code |Error Description                                                                  |
-|-----------|-----------------------------------------------------------------------------|
-|10101      |MobilePay user not found                                                     |
-|10102      |MobilePay user not available                                                 |
-|10103      |MobilePay user not found                                                     |
-|10104      |Invoice already exists                                                       |
-|10105      |Technical error - please contact MobilePay developer support  developer@mobilepay.dk |
-|10008      |Total amount must be greater than 0                                          |
-|10106      |Invoice country does not match consumer country                              |
-|10107      |Specified currency does not match specified country                          |
-|10201      |Total invoice amount is exceeded                                             |
-|10202      |Invoice issuer not found                                                     |
-|10203      |Account validation error                                                     |
-|10204      |Account validation error                                                     |
-|10205      |Technical error - please contact MobilePay developer support  developer@mobilepay.dk |
-|10301      |Invoice already exists                                                       |
-|10302      |Merchant not found                                                           |
-|10303      |Invoice issuer not found                                                     |
-|10304      |MobilePay user not found                                                     |
-|10305      |MobilePay user not found                                                     |
-|10306      |MobilePay user not found                                                     |
-|10310      |DueDate must be no later than 400 days from today                            |
-|10311      |DueDate must be today or later                                               |
-|10312      |IssueDate must be no later than today                                        |
-|10314      |Your daily limit has been reached. No more than 10 invoices can be created per consumer per merchant per day. |
-
-### <a name="validations"/> Validations
-
-A set of business rules apply for an `invoice` before it gets created. If any of following rules fail, an `invoice` falls to `Not Created` state and a response with `error_code` and `error_description` is returned.
-
-|Field          |Country   |Validation                                         |Error Code |Description                                                       |
-|---------------|----------|---------------------------------------------------|-----------|------------------------------------------------------------------|
-|`DueDate`      |DK/FI     |CreatedDate <= DueDate < CreatedDate + 400 days  |10310/10311|`DueDate` must be no more than 400 days in the future.               |
-|`IssueDate`    |DK/FI     |IssueDate <= CreatedDate                         |10312      |`IssueDate` can not be later than invoice creation date.            | 
-|`CountryCode`  |DK/FI     |CountryCode == Consumer CountryCode              |10106      |`CountryCode` must match consumer's `CountryCode`.                  | 
-|`CurrencyCode` |DK        |CurrencyCode == DKK                              |10107      |Only `DKK` is supported for DK invoices.                            |
-|               |FI        |CurrencyCode == EUR                              |10107      |Only `EUR` is supported for FI invoices.                            |
-|`TotalAmount`  |DK        |TotalAmount <= 15000 DKK                         |10201      |`TotalAmount` is limited to 15000 DKK.                              |
-|               |FI        |TotalAmount <= 2000 EUR                           |10201      |`TotalAmount` is limited to 2000 EUR.                                |
-
-## Push notifications 
-
-
-|Description|Action|EN| DK | FI  |Device|
-|----------|---------|---|-------------------|------------------------|----------------------|
-|Push notification when User gets Invoice.   |_Open context screen_        |[Invoice Issuer name] wants to send you a bill  |[Invoice Issuer name] har en regning til dig  |  [Invoice Issuer name] haluaa lähettää sinulle laskun|iOS & Android|
-|In app push when User gets Invoice    |_Open context screen_              |[Invoice Issuer name] wants to send you a bill  | [Invoice Issuer name] har en regning til dig|[Invoice Issuer name] haluaa lähettää sinulle laskun|(just for iOS)|
-| Push notification when User opens Invoice via web  | Open context screen       |Pay a bill  | Betal en regning|Maksa lasku|iOS & Android|
-|In app push when User opens Invoice via web   |Open context screen  | Pay a bill  | Betal en regning|Maksa lasku|(just for iOS)|
- 
-
-## SMS
- - **SMS to user before due date**
-
-SMS is sent for ignored (not accepted or rejected) invoices.
-
- -   SMS is sent to the user one day prior the due date at 13.30 PM 
- -   If the due date equals the current date and the invoice is received before 13:30 PM then the SMS is sent to the user on due date
- -   If the due date equals the current date and the invoice is received after 13:30 PM then the the SMS is sent to the user one day after the due date
- 
- **SMS to user when payment fails**
- -  If the future payment can't be processed SMS is sent at 10:00, but only if user hasn't completed payment manually until this time.
- 
-
-##### Limits
-* Consumer daily invoice count <= 10. No more then 10 invoices can be created per consumer from single merchant.
+#### Types
+* `date` contains both date and time including the UTC offset to avoid any confusions regarding time zones - e.g. `2020-09-03T12:51:56.7099483+00:00`.
+* `decimal` can have up to 2 decimals with `.` as seperator - e.g. `12.25`.

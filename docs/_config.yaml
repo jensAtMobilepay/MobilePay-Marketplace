@@ -1,7 +1,6 @@
-title: MobilePay Invoice
-base_url: https://mobilepaydev.github.io/MobilePay-Invoice/
-description: MobilePay Invoice API documentation.
+title: MobilePay Marketplace
+base_url: https://mobilepaydev.github.io/MobilePay-Marketplace/
+description: MobilePay Marketplace Seller API documentation.
 show_downloads: false
 theme: jekyll-theme-minimal
-repository: MobilePayDev/MobilePay-Invoice
-google_analytics: UA-92933803-2
+repository: MobilePayDev/MobilePay-Marketplace

@@ -1,48 +1,27 @@
 api_reference :
-- title: InvoiceDirect
-  url: "api_reference#direct"
+- title: Product
+  url: "api_reference#product"
 
-- title: InvoiceLink
-  url: "api_reference#link"
+- title: General Notes
+  url: "api_reference#general"
 
-- title: Cancel invoice
-  url: "api_reference#canceling"
-
-- title: Get invoice details
-  url: "api_reference#get-details"
-
-- title: Get invoice status
-  url: "api_reference#get-status"
-  
-- title: User consent for InvoiceDirect
-  url: "api_reference#direct-invoice-consent"
-
-- title: Error codes
-  url: "api_reference#error-codes"
-
-- title: Validations
-  url: "api_reference#validations"
+seller_api_reference :
+- title: Order
+  url: "seller_api_reference#order"
 
 overview_title : Overview
 overview_url : "index"
 
-invoice_issuers_title: Invoice issuers
-invoice_issuers_url: "invoice_issuers"
-
-api_reference_title: API endpoint reference
+api_reference_title: MobilePay API Reference
 api_reference_url: "api_reference"
 
-callbacks_title: Callbacks
-callbacks_url: "callbacks"
+seller_api_reference_title: Seller API Reference
+seller_api_reference_url: "seller_api_reference"
 
-invoiceinapp_title: Visual examples
-invoiceinapp_url: "visual_examples"
+sandprod_app_title: Verification in SandBox
+sandprod_app_url: "sandprod_app"
 
 release_notes_title: Release Notes
 release_notes:
-- title: Invoice 1.5
-  url: "release_notes_1.5"
-
-- title: Invoice 1.4
-  comment: (In progress. Available in Sandbox)
-  url: "release_notes_1.4"
+- title: Marketplace 1.0
+  url: "release_notes_1.0"
