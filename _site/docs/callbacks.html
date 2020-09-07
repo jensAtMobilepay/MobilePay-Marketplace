@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Callbacks | MobilePay-Marketplace</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Callbacks" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/docs/callbacks.html" />
+<meta property="og:url" content="http://localhost:4000/docs/callbacks.html" />
+<meta property="og:site_name" content="MobilePay-Marketplace" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/docs/callbacks.html","headline":"Callbacks","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=7fc7342a1db612c7c3643f495777bbbb6b18fd7a">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:4000/">MobilePay-Marketplace</a></h1>
+      
+
+      <h2 id="callbacks">Callbacks</h2>
+
+<h4 id="how-merchants-and-integrators-should-handle-invoice-callbacks">How merchants and integrators should handle invoice callbacks</h4>
+<p>It’s asynchronous messaging and we cannot ensure the right order of the events. That’s why we added a property  <code class="language-plaintext highlighter-rouge">Date</code>  to each status change, so that the merchant’s would know when particular events have happened</p>
+
+<p>Invoice callbacks are sent using batches. The job starts every 30 seconds. In the event that the callbacks are received in incorrect order according to your timestamp, please check the property  <code class="language-plaintext highlighter-rouge">Date</code>. We added property  <code class="language-plaintext highlighter-rouge">Date</code>  so you can compare the callbacks to the status and the timestamp.</p>
+
+<p>Make sure to not rely on whitelisting MobilePay’s sending IP addresses, as these IP addresses are subject to change without notice.</p>
+
+<h5 id="rest-callback-retries">REST callback retries</h5>
+
+<p>In case the REST callback failed, 8 retries will be made</p>
+
+<ul>
+  <li>1st retry after 5 seconds</li>
+  <li>2nd retry 19 minutes after 1st failed retry</li>
+  <li>3rd retry 39 minutes after 2nd failed retry</li>
+  <li>4th retry 1 hour and 19 minutes after 3rd failed retry</li>
+  <li>5th retry 2 hours and 39 minutes after 4th failed retry</li>
+  <li>6th retry 5 hours and 19 minutes after 5th failed retry</li>
+  <li>7th retry 10 hours and 39 minutes after 6th failed retry</li>
+  <li>8th retry 21 hours and 19 minutes after 7th failed retry</li>
+</ul>
+
+<hr />
+
+<h4 id="rest-callback-authentication">REST callback authentication</h4>
+
+<p>In order to receive callbacks about status changes for an invoice a callback URL must be specified first. But before setting your callback URL you must choose prefered authentication method which we will use for authenticating our requests when calling your callback URL. Currently we support <code><a href="https://tools.ietf.org/html/rfc7617">Basic</a></code> and <code class="language-plaintext highlighter-rouge">ApiKey</code> authentication methods:</p>
+
+<h5 id="basic">Basic</h5>
+
+<p>Using <code class="language-plaintext highlighter-rouge">basic</code> All the REST callbacks will be sent to <code class="language-plaintext highlighter-rouge">CallbackUrl</code> and contain basic credentials in <code class="language-plaintext highlighter-rouge">Authorization</code>  HTTP header:</p>
+
+<p><code class="language-plaintext highlighter-rouge">Authorization: Basic [Base64 encoded username:password]</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PUT /api/v1/merchants/{merchantId}/auth/basic
+</code></pre></div></div>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Username"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MySecretPswd"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"callbackurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your.url/callbacks/invoice"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h5 id="apikey">ApiKey</h5>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PUT /api/v1/merchants/{merchantId}/auth/apikey
+</code></pre></div></div>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"ApiKey"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SomeSecretApiKey123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"callbackurl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://your.url/callbacks/invoice"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Using <code class="language-plaintext highlighter-rouge">ApiKey</code> authentication method your provided API key will be simply added to <code class="language-plaintext highlighter-rouge">Authorization</code> header.</p>
+
+<p>Example of our callback body:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"InvoiceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3c440dfb-b271-4d21-ad1c-f973f2c4f448"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rejected"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Date"</span><span class="p">:</span><span class="s2">"2018-04-24T07:29:47.7500268+00:00"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"InvoiceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3c440dfb-b271-4d21-ad1c-f973f2c4f449"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Invalid"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ErrorCode"</span><span class="p">:</span><span class="w"> </span><span class="mi">10106</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ErrorMessage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;description of error&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Date"</span><span class="p">:</span><span class="s2">"2018-04-24T07:29:47.7500268+00:00"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>All possible invoice statuses returned in callback body can be found in <a href="api_reference#get-status">Get invoice status</a> section.</p>
+
+<div class="note">
+<strong>Note:</strong> When status of an invoice is <code>accepted</code> one additional field will be added: <code>PaymentDate</code>.
+</div>
+<div class="note">
+<strong>Note:</strong> When status of an invoice is <code>invalid</code> two additional fields will be added: <code>ErrorCode</code> and <code>ErrorMessage</code>. All possible validation errors can be found in <a href="api_reference#validations">validations</a> section.
+</div>
+
+<p>Callbacks about created <code class="language-plaintext highlighter-rouge">InvoiceLinks</code> which were created asynchronously using <a href="api_reference#create_multiple_invoice_links">batch endpoint</a> will contain additional field <code class="language-plaintext highlighter-rouge">Links</code> with <code class="language-plaintext highlighter-rouge">Rel="user-redirect"</code> and <code class="language-plaintext highlighter-rouge">Href</code> to the page where MobilePay users can accept an invoice, e.g.:</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"InvoiceId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3c440dfb-b271-4d21-ad1c-f973f2c4f448"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Created"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"Links"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"Rel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user-redirect"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"Href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;url-for-accepting-invoice&gt;"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"Date"</span><span class="p">:</span><span class="s2">"2018-04-24T07:29:47.7500268+00:00"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  </body>
+</html>

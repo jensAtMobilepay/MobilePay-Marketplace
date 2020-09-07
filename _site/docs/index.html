@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Part 1 : Onboarding a Invoice client | MobilePay-Marketplace</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Part 1 : Onboarding a Invoice client" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/docs/" />
+<meta property="og:url" content="http://localhost:4000/docs/" />
+<meta property="og:site_name" content="MobilePay-Marketplace" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/docs/","headline":"Part 1 : Onboarding a Invoice client","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=7fc7342a1db612c7c3643f495777bbbb6b18fd7a">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:4000/">MobilePay-Marketplace</a></h1>
+      
+
+      <h1 id="part-1--onboarding-a-invoice-client"><a name="invoiceclient_onboarding"></a><strong>Part 1 : Onboarding a Invoice client</strong></h1>
+
+<ol>
+  <li>
+    <p><strong>Read API documentation.</strong> You will find it in the  <a href="https://sandbox-developer.mobilepay.dk/product">APIs menu</a>.</p>
+  </li>
+  <li>
+    <p><strong>Log-in on the developer portal.</strong> Go to <a href="https://sandbox-developer.mobilepay.dk/">Sandbox developer portal</a> and log in with your credentials.</p>
+  </li>
+  <li>
+    <p><strong>Create an app in the developer portal.</strong> Go to My Apps &gt; Create new App to register a new application. You need to supply the <code class="language-plaintext highlighter-rouge">x-ibm-client-id</code> when calling APIs. You should always store the <code class="language-plaintext highlighter-rouge">x-ibm-client-id</code> in a secure location, and never reveal it publicly.  More details about the usage of <code class="language-plaintext highlighter-rouge">x-ibm-client-id</code> below in the authentication section.</p>
+  </li>
+  <li><strong>Subscribe the app to APIs.</strong>  Go to <a href="https://sandbox-developer.mobilepay.dk/product">APIs</a> and subscribe to the following APIs:
+    <ul>
+      <li>Invoice</li>
+      <li>Invoice User Simulation</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Receive OAuth  Credentials via zip file.</strong> The Credentials will be used when calling the token endpoint (described below) to generate an <code class="language-plaintext highlighter-rouge">access token</code>. The zip file will be sent via e-mail. The zip file is locked with a password. DeveloperSupport will provide the password via text message to ensure the password protected file and the password is not transmitted together. You will also receive a testuser to  <a href="https://sandprod-admin.mobilepay.dk/">Sandbox MobilePay Portal</a></p>
+  </li>
+  <li><strong>Send your redirect URI to developer@mobilepay.dk</strong> The <code class="language-plaintext highlighter-rouge">redirect_uri</code> will be used once the user authenticates successfully. MobilePay will only redirect users to a registered <code class="language-plaintext highlighter-rouge">redirect_uri</code>, in order to prevent redirection attacks where an <code class="language-plaintext highlighter-rouge">authorization_code</code> or <code class="language-plaintext highlighter-rouge">access_token</code> can be obtained by an attacker. The <code class="language-plaintext highlighter-rouge">redirect_uri</code> must be an https endpoint to prevent tokens from being intercepted during the authorization process. You need to provide your own <code class="language-plaintext highlighter-rouge">redirect_uri</code> and send it to developer@mobilepay.dk so it can be whitelisted. We will whitelist is as soon as we process your email request and we will confirm via e-mail, once it has been whitelisted.</li>
+</ol>
+
+<p>Now you are ready to move on to the authentication section below.</p>
+
+<h2 id="overview-of-mobilepay-invoice-integration">Overview of MobilePay Invoice integration</h2>
+<p>When the merchant is onboarded via  <a href="https://admin.mobilepay.dk/">Production MobilePay Portal</a>, and has ordered MobilePay Invoice, then you can continue with OIDC.</p>
+
+<p>Note: if you are still working on the integration in sandbox, you will use <a href="https://sandprod-admin.mobilepay.dk/">Sandbox MobilePay Portal</a> from step 5 in part 1.</p>
+
+<p>This document explains how to make a technical integration to the <strong>MobilePay Invoice</strong> product. The audience for this document is either technical integrators acting on behalf of merchants or merchants creating their own integrations.</p>
+
+<h3 id="openid-flow">OpenID flow</h3>
+<p><a href="assets/images/OpenIdflowWithFIandAuthorize.png"><img src="/docs/assets/images/OpenIdflowWithFIandAuthorize.png" alt="" /></a></p>
+
+<p>When user clicks on this button, merchant must do back-end call to <br />
+<a href="https://developer.mobilepay.dk/products/openid/authorizeo"><code class="language-plaintext highlighter-rouge">"/authorize"</code></a> endpoint for initiating  authentication flow. You need to wait for the response by listening on the redirect URI and get the Authorization Code. Our system will re-direct the merchant back to your system also using the redirect URL.</p>
+
+<p>In short - The flow is described in the following 5 steps:</p>
+
+<h2 id="5-steps-to-implementing-openid-connect">5 steps to Implementing OpenID Connect</h2>
+
+<p>There are many OpenID Connect certified libraries, so you have to chose the one, that suits you best <a href="http://openid.net/developers/certified/#RPLibs">from this list</a>. we recommend <a href="https://github.com/IdentityModel/IdentityModel.OidcClient2">Certified C#/NetStandard OpenID Connect Client Library </a> 
+The flow is described in the following 5 steps:</p>
+
+<ol>
+  <li>
+    <p><strong>Call /connect/authorize to initiate user login and consent</strong>  The Merchant must grant consent through mechanism in the OpenID Connect protocol suite. The Hybrid Flow should be initiated. For Invoice product the Client must request consent from the merchant using the <code class="language-plaintext highlighter-rouge">invoice</code> scope. You also need to specify <code class="language-plaintext highlighter-rouge">offline_access</code> scope, in order to get the refresh token. When user clicks on this button, merchant must do back-end call to  <code class="language-plaintext highlighter-rouge">"/authorize"</code> endpoint for initiating  authentication flow. 
+<strong>Docs</strong> <a href="https://developer.mobilepay.dk/developersupport/openid/authorize/">here</a></p>
+  </li>
+  <li>
+    <p><strong>Wait for the response by listening on the redirect URI and get the authorization code</strong> You need to wait for the response by listening on the <code class="language-plaintext highlighter-rouge">redirect_url</code> and get the <code class="language-plaintext highlighter-rouge">authorization_code</code>. Our system will re-direct the merchant back to your system also using the <code class="language-plaintext highlighter-rouge">redirect_url</code>. 
+<strong>Docs</strong> <a href="https://developer.mobilepay.dk/developersupport/openid/getcode/">here</a></p>
+  </li>
+  <li>
+    <p><strong>Exchange the authorization code for tokens using /connect/token</strong> Once you got the <code class="language-plaintext highlighter-rouge">authorization_code</code>, you can use it to get <code class="language-plaintext highlighter-rouge">access_token</code> and <code class="language-plaintext highlighter-rouge">refresh_token</code> from the token endpoint. 
+<strong>Docs</strong> <a href="https://developer.mobilepay.dk/developersupport/openid/gettokens/">here</a></p>
+  </li>
+  <li>
+    <p><strong>Keep the session alive by using the refresh token</strong> When the <code class="language-plaintext highlighter-rouge">access_token</code> expires, the <code class="language-plaintext highlighter-rouge">refresh_token</code> can be used to obtain a fresh <code class="language-plaintext highlighter-rouge">access_token</code> with the same permissions, without further involvement from a user. 
+<strong>Docs</strong> <a href="https://developer.mobilepay.dk/developersupport/openid/getrefreshtokens/">here</a></p>
+  </li>
+  <li>
+    <p><strong>Follow Best Practice</strong>  Keeping credentials secure is important whether you’re developing open source libraries, or in this case, an MobilePay API integration for your product. 
+<strong>Docs</strong> <a href="https://developer.mobilepay.dk/developersupport/openid/bestpractice/">here</a></p>
+  </li>
+</ol>
+
+<h1 id="-authentication-of-api-requests"><a name="authenticationapi"></a> Authentication of API requests</h1>
+<p>The MobilePay API Gateway is ensuring the authentication of all MobilePay Invoice API requests. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.</p>
+
+<p>To be able to use and connect to the API there are few requirements. In order to authenticate to the API, all requests to the API must contain at least three authentication headers:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">x-ibm-client-id</code></li>
+  <li><code class="language-plaintext highlighter-rouge">x-ibm-client-secret</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Authorization</code></li>
+</ol>
+
+<p>Creating an app in MobilePay Developer Portal will create a <code class="language-plaintext highlighter-rouge">x-ibm-client-id</code> and <code class="language-plaintext highlighter-rouge">x-ibm-client-secret</code> that should be used in all calls to the MobilePay Invoice API</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gp">$</span><span class="w"> </span>curl <span class="nt">--header</span> <span class="s2">"Authorization: Bearer &lt;token&gt;"</span> <span class="nt">--header</span> <span class="s1">'x-ibm-client-id: client-id'</span> <span class="nt">--header</span> <span class="s1">'x-ibm-client-secret: client-secret'</span> <span class="nt">--url</span> https://&lt;mobile-pay-root&gt;/api/merchants/me/resource
+</code></pre></div></div>
+
+<h3 id="best-practice">Best Practice</h3>
+<ul>
+  <li>You can read more about the product <a href="https://developer.mobilepay.dk/invoice-main/productinfo">here</a>.</li>
+  <li>Pick an OpenID Connect library: we recommend <a href="https://github.com/IdentityModel/IdentityModel.OidcClient2">Certified C#/NetStandard OpenID Connect Client Library for native mobile/desktop Applications</a></li>
+  <li>Read the FAQ’s for OpenID Connect <a href="https://developer.mobilepay.dk/faq/oidc">here</a></li>
+  <li>Integration is based on common standard OpenID Connect. You can find more <a href="https://developer.mobilepay.dk/developersupport/openid/">here</a>.</li>
+  <li>An example of how to use OpenID connect in C# can be found <a href="https://github.com/MobilePayDev/MobilePay-Invoice/tree/master/ClientExamples">here</a></li>
+  <li>You can find links to the official Hybrid Flow <a href="https://openid.net/specs/openid-connect-core-1_0.html#HybridFlowAuth">here</a>.</li>
+  <li>See the video tutorial  <a href="https://developer.mobilepay.dk/developersupport/openid/tutorial">here</a></li>
+</ul>
+
+<hr />
+
+<h3 id="openid-configuration-endpoints">OpenID configuration endpoints</h3>
+<p>Find the configuration links below:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Environment</th>
+      <th>Links</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Sandbox</td>
+      <td>Denmark <a href="https://sandprod-admin.mobilepay.dk/account/.well-known/openid-configuration">https://sandprod-admin.mobilepay.dk/account/.well-known/openid-configuration</a> <br /> Finland <a href="https://sandprod-admin.mobilepay.fi/account/.well-known/openid-configuration">https://sandprod-admin.mobilepay.fi/account/.well-known/openid-configuration</a></td>
+    </tr>
+    <tr>
+      <td>Production</td>
+      <td>Denmark <a href="https://admin.mobilepay.dk/account/.well-known/openid-configuration">https://admin.mobilepay.dk/account/.well-known/openid-configuration</a> <br /> Finland <a href="https://admin.mobilepay.fi/account/.well-known/openid-configuration">https://admin.mobilepay.fi/account/.well-known/openid-configuration</a></td>
+    </tr>
+  </tbody>
+</table>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  </body>
+</html>

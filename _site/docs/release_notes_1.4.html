@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Invoice 1.4 Release Notes | MobilePay-Marketplace</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Invoice 1.4 Release Notes" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/docs/release_notes_1.4.html" />
+<meta property="og:url" content="http://localhost:4000/docs/release_notes_1.4.html" />
+<meta property="og:site_name" content="MobilePay-Marketplace" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/docs/release_notes_1.4.html","headline":"Invoice 1.4 Release Notes","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=7fc7342a1db612c7c3643f495777bbbb6b18fd7a">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:4000/">MobilePay-Marketplace</a></h1>
+      
+
+      <h2 id="invoice-14-release-notes">Invoice 1.4 Release Notes</h2>
+<h3 id="-28-july-2020---paymentreference"><a name="response_code"></a> 28 july 2020 - PaymentReference</h3>
+<p>Due to restrictions in external systems we added recommendation to keep <code class="language-plaintext highlighter-rouge">PaymentReference</code> up to 30 symbols for <a href="api_reference#single-invoice-request">direct invoice</a> and <a href="api_reference#invoice-link-request">invoice link</a> requests.</p>
+
+<h3 id="-26-june-2020---user-consent-for-invoicedirect-released-in-sandbox"><a name="response_code"></a> 26 june 2020 - User consent for InvoiceDirect released in Sandbox</h3>
+<p>New feature: User consent for InvoiceDirect. Read more about user consent for InvoiceDirect <a href="https://mobilepaydev.github.io/MobilePay-Invoice/api_reference#direct-invoice-consent">here</a></p>
+
+<p>Goal of this functionality is for invoice issuer to ask users phone number and consent to receive Invoices directly to MobilePay (InvoiceDirect). Current release is just in Sandbox. Release in Production is planned for beginning of August. App version from which functionality can work for users - 4.24.0 (July).</p>
+
+<h3 id="-23-april-2020---consumername-and-consumeraddresslines-now-optional"><a name="response_code"></a> 23 april 2020 - ConsumerName and ConsumerAddressLines now optional</h3>
+<p>Removed <strong>Required</strong> validation for <code class="language-plaintext highlighter-rouge">ConsumerName</code> and <code class="language-plaintext highlighter-rouge">ConsumerAddressLines</code></p>
+
+<h3 id="-17-february-2020---increased-max-number-of-invoices-to-one-user"><a name="response_code"></a> 17 february 2020 - Increased max number of invoices to one user</h3>
+<p>Increased the max number of invoices per day merchants can send to one user. Now merchants can send up to 10 invoices to one user.</p>
+
+<h3 id="-17-february-2020---removed-merchant-daily-invoice-limit"><a name="response_code"></a> 17 february 2020 - Removed Merchant daily Invoice limit</h3>
+<p>Daily invoice <code>Limit</code> for merchants was removed.</p>
+
+<h3 id="-16-january-2020---increased-invoice-fi-amount"><a name="response_code"></a> 16 january 2020 - Increased Invoice FI amount</h3>
+<p>Invoice FI <code>Amount</code> validation was increased to 2000 EUR</p>
+
+<h3 id="-08-november-2019---removed-consumer-name-validation"><a name="response_code"></a> 08 november 2019 - Removed consumer name validation</h3>
+<p><code>ConsumerName</code> validation (Levenshtein rule) was removed from InvoiceDirect validation rules.
+However, it is still used for displaying <code>ConsumerName</code> when generating invoice PDF.</p>
+
+<h3 id="-06-august-2019---response-code"><a name="response_code"></a> 06 august 2019 - Response Code</h3>
+<p>The response codes for invoices have been unified. Batch requests now return <code>202</code> , all others should now return <code>200</code> 
+If your system logic examines the concrete response code and checks strict the status code, you may have to change the logic in order to cope with the change in response code. We do not consider this a breaking chance, as most merchants only check if the call was a success such as 2xx, and do not depend on a concrete status code. However, having the right HTTP status codes mapped also enables you to get more insight around the response received.</p>
+
+<h3 id="-01-april-2019---decimals"><a name="decimals"></a> 01 april 2019 - decimals</h3>
+<p><code>TotalVATAmount</code> can not have more than two decimals.</p>
+
+<h3 id="-01-march-2019---qr-code"><a name="response_code"></a> 01 march 2019 - QR code</h3>
+
+<p>New feature: Scanning QR code with InvoiceLink will open MobilePay Invoice</p>
+
+<p>We’re excited to announce, that MobilePay’s own QR code reader can now read a QR code, that contains InvoiceLink. Read more about InvoiceLink <a href="https://github.com/MobilePayDev/MobilePay-Invoice/blob/master/docs/api_reference.md#-invoicelink">here</a></p>
+<ul>
+  <li>When you scan a QR with the MobilePay app, and the QR contains InvoiceLink, then the Invoice context screen is opened.</li>
+  <li>If the scanned link is already expired, then the user will see an error message in the overlay screen</li>
+  <li>If the invoice is expired, then the endpoint will return a 404 status</li>
+</ul>
+
+<p><a href="assets/images/android_fi2.jpg"><img src="/docs/assets/images/android_fi2.jpg" alt="" /></a></p>
+
+<h3 id="-provide-your-own-pdf-for-invoice"><a name="Merchant-PDF"></a> Provide your own PDF for invoice</h3>
+<p>Currenlty, PDF file of the invoice is generated internally by MobilePay. With release of <strong>Invoice 1.4</strong> merchants now have a possibility to provide the URL to their own PDF file.</p>
+
+<p>If you create an invoice with <code>InvoiceUrl</code> parameter filled in, user will be redirected to the URL from the app when showing an invoice, otherwise the previous flow of showing PDF generated by MobilePay internally will apply.</p>
+
+<p>The following endpoints will be extended to accept an optional <code>InvoiceUrl</code> parameter:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST api/v1/merchants/{merchantId}/invoices
+POST api/v1/merchants/{merchantId}/invoices/batch
+POST api/v1/merchants/{merchantId}/invoices/link
+POST api/v1/merchants/{merchantId}/invoices/link/batch
+</code></pre></div></div>
+
+<h5 id="-input"><a name="single_invoice_object"></a> Input</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">InvoiceUrl</code>         </td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>URL to the Invoice PDF provided by merchant.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+<strong>Note:</strong> Only HTTPS scheme URLs will be supported.
+</div>
+
+<h5 id="create-invoice-direct-example">Create Invoice Direct example</h5>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"InvoiceIssuer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"efd08c19-24cf-4833-a4a4-bfa7bd58fbb2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ConsumerAlias"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"Alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+4577007700"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"AliasType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Phone"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"ConsumerName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Consumer Name"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"TotalAmount"</span><span class="p">:</span><span class="w"> </span><span class="mi">360</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"TotalVATAmount"</span><span class="p">:</span><span class="w"> </span><span class="mi">72</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"CountryCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DK"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"CurrencyCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DKK"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ConsumerAddressLines"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"Paradisæblevej 13"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"CC-1234 Andeby"</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"WONDERLAND"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"DeliveryAddressLines"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"Østerbrogade 120"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"CC-1234 Andeby"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"WONDERLAND"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"InvoiceNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"301"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"IssueDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-02-12"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"DueDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-03-12"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"OrderDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-02-05"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"DeliveryDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-02-10"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"Comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Any comment"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"MerchantContactName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Snowboard gear shop"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"MerchantOrderNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"938"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"BuyerOrderNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"631"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"PaymentReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"186"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"InvoiceArticles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"ArticleNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1-123"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ArticleDescription"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Process Flying V Snowboard"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"VATRate"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"TotalVATAmount"</span><span class="p">:</span><span class="w"> </span><span class="mi">72</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"TotalPriceIncludingVat"</span><span class="p">:</span><span class="w"> </span><span class="mi">360</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"PricePerUnit"</span><span class="p">:</span><span class="w"> </span><span class="mi">288</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"PriceReduction"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"PriceDiscount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Bonus"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w">
+    </span><span class="p">}</span><span class="w">      
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"InvoiceUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.merchant.dk/invoice/efd08c19-24cf-4833-a4a4-bfa7bd58123"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<h5 id="create-invoice-link-example">Create Invoice Link example</h5>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"InvoiceIssuer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"efd08c19-24cf-4833-a4a4-bfa7bd58fbb2"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ConsumerAlias"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"Alias"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+4577007700"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"AliasType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Phone"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"ConsumerName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Consumer Name"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"TotalAmount"</span><span class="p">:</span><span class="w"> </span><span class="mi">360</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"TotalVATAmount"</span><span class="p">:</span><span class="w"> </span><span class="mi">72</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"CountryCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DK"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"CurrencyCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DKK"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"ConsumerAddressLines"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"Paradisæblevej 13"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"CC-1234 Andeby"</span><span class="p">,</span><span class="w"> 
+    </span><span class="s2">"WONDERLAND"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"DeliveryAddressLines"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"Østerbrogade 120"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"CC-1234 Andeby"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"WONDERLAND"</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"InvoiceNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"301"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"IssueDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-02-12"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"DueDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-03-12"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"OrderDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-02-05"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"DeliveryDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-02-10"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"Comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Any comment"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"MerchantContactName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Snowboard gear shop"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"MerchantOrderNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"938"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"BuyerOrderNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"631"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"PaymentReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"186"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"InvoiceArticles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"ArticleNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1-123"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"ArticleDescription"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Process Flying V Snowboard"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"VATRate"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"TotalVATAmount"</span><span class="p">:</span><span class="w"> </span><span class="mi">72</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"TotalPriceIncludingVat"</span><span class="p">:</span><span class="w"> </span><span class="mi">360</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"PricePerUnit"</span><span class="p">:</span><span class="w"> </span><span class="mi">288</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"PriceReduction"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"PriceDiscount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"Bonus"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w">
+    </span><span class="p">}</span><span class="w">      
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nl">"InvoiceUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.merchant.dk/invoice/efd08c19-24cf-4833-a4a4-bfa7bd58124"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  </body>
+</html>
