@@ -20,9 +20,9 @@ POST seller-base-url/orders
 
 |Parameter             |Sub Parameter |Type        |Description |
 |----------------------|--------------|------------|------------|
-|`orderId`||`guid`| **Required.** Id representing the order. You must be idempotent on this value. If you receive multiple requests with the same `orderId` it should only end up with 1 `Order` being created and the responses two the requests should be identical. |
+|`orderId`||`guid`| **Required.** Id representing the order. You must be idempotent on this value. If you receive multiple requests with the same `orderId` it should only end up with 1 `Order` being created and the responses to the two requests should be identical. |
 |`productId`||`guid`| **Required.** Id of the product that has been purchased. Same value as returned after creating a new `Product`. <a href="api_reference#add_product">See endpoint</a>. |
-|`productReference`||`string`| **Required.**  Sellers internal reference of the product that has been purchased. Same value as provided when creating a new `Product`. <a href="api_reference#add_product">See endpoint</a>. |
+|`productReference`||`string`| **Required.**  Seller's internal reference of the product that has been purchased. Same value as provided when creating a new `Product`. <a href="api_reference#add_product">See endpoint</a>. |
 |`productConfigurationValue`||`integer`| **Required.** The configured value of the product. If product configuration type is `StepAmount` then this value is the monetary value of the gift card, otherwise if it is `StepQuantity` then this is the quantity of the product that the User selected. |
 
 ##### Example
@@ -49,7 +49,7 @@ HTTP 200 OK
 
 #### Get Order
 
-When an `Order` has been created by MobilePay calling your endpoint as described above, MobilePay will at some point query the created resource for getting details about the purchased product to be shown to the user, eg. bar codes. 
+When an `Order` has been created by MobilePay calling your endpoint as described above, MobilePay will at some point query the created resource for getting details about the purchased product to be shown to the user, e.g. bar codes. 
 ```
 GET seller-base-url/orders/{orderReference}
 ```
@@ -59,19 +59,19 @@ GET seller-base-url/orders/{orderReference}
 |Parameter             |Sub Parameter |Sub Parameter  |Type        |Description |
 |----------------------|--------------|---------------|------------|------------|
 |`expiryDate`|||`date`| **Required.** The exact date and time when the product can no longer be used |
-|`companyLogoUrl`|||`string`| **Required.** Logo portraying the company who is providing the product. W: 60px H: 292px. |
+|`companyLogoUrl`|||`string`| **Required.** Logo portraying the company who is providing the product. W: 60px H: 292px. Should have transparent background. File type should be png. |
 |`coupons`|||`object[]`| **Required.** List of coupons that the User should received upon purchase of the product. |
 ||`completelyUsed`||`boolean`|**Required.** Should be `true` if the User has fully used the coupon and it no longer holds any value. Otherwise this should be `false`. |
 ||`remainingAmount`||`decimal`| **Required for `StepAmount` `Products`.** Should contain the amount left on the gift card. |
-||`copyToClipboardValue`||`string`| A string that will be copied to the Users clipboard upon tapping a button. Ideal for codes that need to be entered on websites or apps from the Users phone. |
+||`copyToClipboardValue`||`string`| A string that will be copied to the Users clipboard upon tapping a button. Ideal for codes that need to be entered on websites or apps from the User's phone. |
 ||`localizations`||`object[]`| **Required.** Translations of texts displayed on each coupon. |
-|||`language`|`string`| **Required** Langauge of the given localization. `DA_DK`, `EN_DK`, `FI_FI` or `EN_FI`. | 
+|||`language`|`string`| **Required** Language of the given localization. `DA_DK`, `EN_DK`, `FI_FI` or `EN_FI`. | 
 |||`title`|`string`| **Required** Title of the coupon. |
 |||`subtitle`|`string`| **Required** Subtitle of the coupon. |
 |||`elementImageUrl`|`string`| Url to an image of the bar code used to redeem the coupon. If `elementHeaderText` is set, then this must be `null`. |
-|||`elementHeaderText`|`string`| Header text used to describe the type of redeem code, eg. 'Rabatkode'. If `elementImageUrl`is set, then this must be `null`. |
-|||`elementText1`|`string`| Line 1 describing the redeem code, eg. '91823175'. |
-|||`elementText2`|`string`| Line 2 describing the redeem code, eg. 'Pin: 3842'. |
+|||`elementHeaderText`|`string`| Header text used to describe the type of redeem code, e.g. 'Rabatkode'. If `elementImageUrl`is set, then this must be `null`. |
+|||`elementText1`|`string`| Line 1 describing the redeem code, e.g. '91823175'. |
+|||`elementText2`|`string`| Line 2 describing the redeem code, e.g. 'Pin: 3842'. |
 |||`howToUseTitle`|`string`| Title for the how to use section. |
 |||`howToUseExplanation`|`string`| Explanation for how to use the product, displayed in the how to use section. |
 
@@ -83,13 +83,12 @@ HTTP 200 OK
 ```
 ```json
 {
-  "expiryDate": "2011-02-29 12:43:00",
+  "expiryDate": "2020-09-03T12:51:56+00:00",
   "companyLogoUrl": "https://gogift.dk/matas.png",
   "coupons": [
     {
       "completelyUsed": false,
       "remainingAmount": 230.56,
-      "merchantImageUrl": "https://matas.dk/logo.png",
       "copyToClipboardValue": "23230923",
       "couponDetails": [
         {

@@ -20,22 +20,22 @@ POST api/v1/marketplace/seller/products
 
 |Parameter             |Sub Parameter |Type        |Description |
 |----------------------|--------------|------------|------------|
-|`sellersProductReference`       ||`string`| **Required.** Reference to the product in ther Sellers internal system. |
+|`sellersProductReference`       ||`string`| **Required.** Reference to the product in ther Seller's internal system. |
 |`productConfiguration`       ||`object`| **Required.** Options for how the User can configure the Product before buying it. |
 ||`type`|`string`|**Required.** Type of product configuration. Either `StepAmount` for gift cards with a specific monetary value allowing User to control the value on the gift card, or `StepQuantity` to instead let the User purchase multiple of the fixed-value product. |
-||`maximum`|`integer` | **Required.** The maximum amount that the monetary gift card can be on, or the maximum quantity that the User can buy depending on `type`.|
 ||`minimum`|`integer`|**Required.** The minimum amount that the monetary gift card can be on, or the minium quantity that the User can buy depending on `type`.|
+||`maximum`|`integer` | **Required.** The maximum amount that the monetary gift card can be on, or the maximum quantity that the User can buy depending on `type`.|
 ||`default`|`integer`|**Required.** The default amount that the monetary gift card is set to for the User, or the default quantity depending on `type`.|
-||`stepSize`|`integer`|**Required.** The step size of increments or decrements in Users chosen amount or quantity based on `type`.|
+||`stepSize`|`integer`|**Required.** The step size of increments or decrements in User's chosen amount or quantity based on `type`.|
 ||`pricePerUnit`|`decimal`|**Required.** The price per product in local market currency. For `StepAmount` this should be set to `1`.|
 ||`vatPerUnit`|`decimal`|**Required.** The VAT per product in local market currency. For `StepAmount` this should be set to `0`.|
-|`localizations`      ||`object[]`      | List of product text localizations. Must contain required languages as stated under Market.|
-||`language`|`string(5)`|**Required.** Langauge of the given localization. `DA_DK`, `EN_DK`, `FI_FI` or `EN_FI`.|
+|`localizations`      ||`object[]`      |**Required.** List of product text localizations. Must contain required languages as stated under Market.|
+||`language`|`string(5)`|**Required.** Language of the given localization. `DA_DK`, `EN_DK`, `FI_FI` or `EN_FI`.|
 ||`title`|`string`|**Required.** Title of the product. |
 ||`subtitle`|`string`|**Required.** Subtitle of the product. |
 ||`descriptionBuyer`|`string`|**Required.** Description of the product shown to the buyer. |
 ||`descriptionRecipient`|`string`|**Required.** Description of the product shown to the recipient of the product. |
-||`merchantProductUrl`|`string`| Url to the product on the Sellers website. |
+||`merchantProductUrl`|`string`| Url to the product on the Seller's website. |
 |`coverImages`||`object[]`|**Required.** List of images to be used as cover images for the product |
 ||`x2Url`|`string`|**Required.** Url to image in resolution: W: 720px H: 450px |
 ||`x3Url`|`string`|**Required.** Url to image in resolution: W: 1080px H: 675px |
@@ -56,7 +56,7 @@ POST api/v1/marketplace/seller/products
 | `campaignEndDate` || `date`| A specific date and time when the product is no longer allowed to be sold. If not provided, the `Product` will continue to be available until manually removed. |
 
 <div class="note">
-  <strong>Note:</strong> Products can not be updated at the moment. Instead the old product should be deleted and a new one created.
+  <strong>Note:</strong> Products cannot be updated at the moment. Instead the old product should be deleted and a new one created.
 </div>
 
 ##### Example
@@ -123,7 +123,17 @@ HTTP 200 OK
 ```
 ```json
 {
-    "ProductId" : "63679ab7-cc49-4f75-80a7-86217fc105ea"
+    "productId" : "63679ab7-cc49-4f75-80a7-86217fc105ea"
+}
+```
+
+```
+HTTP 409 Conflict
+```
+```json
+{
+    "code": "232",
+    "message": "Localizations must contain required translations"
 }
 ```
 
@@ -151,7 +161,7 @@ HTTP 200 OK
 
 #### Remove Product
 
-You can remove a product from the Marketplace. As Users can schedule purchases out in the future, expect that your removed product will still be purchased. Removing it from the Marketplace simply means no new Users can find and purchase the product when browsing the Marketplace.
+You can remove a product from the Marketplace. As Users can schedule purchases out in the future, expect that your removed product will still be purchased and used after removal. Removing it from the Marketplace simply means no new Users can find and purchase the product when browsing the Marketplace.
 
 ```
 DELETE api/v1/marketplace/seller/products/{productId}
@@ -171,13 +181,13 @@ HTTP 200 OK
 The MobilePay Marketplace operates with different Markets, one for Denmark (`DK`) and one for Finland (`FI`). Products are not shared across Markets. All prices are in `DKK` for `DK` market and `EUR` for `FI` market.
 
 #### Localizations
-Some requests feature a `localizations` list. This list must contain the following required languages for their respective market as shown below.
+Some requests feature a `localizations` list. This list must contain translations in the following languages for their respective market as shown below.
 
 * `DK` market
   * `DA_DK`: Translations in Danish language
   * `EN_DK`: Translations in English language
 * `FI` market
-  * `FI_FI`: Translations in Finish language
+  * `FI_FI`: Translations in Finnish language
   * `EN_FI`: Translations in English language
 
 #### Currencies
@@ -186,5 +196,5 @@ Currencies are determined automatically by the Market.
 * `FI` Market uses `EUR`
 
 #### Types
-* `date` contains both date and time including the UTC offset to avoid any confusions regarding time zones - e.g. `2020-09-03T12:51:56.7099483+00:00`.
+* `date` contains both date and time in ISO 8601 format including the UTC offset to avoid any confusions regarding time zones - e.g. `2020-09-03T12:51:56+00:00`.
 * `decimal` can have up to 2 decimals with `.` as seperator - e.g. `12.25`.

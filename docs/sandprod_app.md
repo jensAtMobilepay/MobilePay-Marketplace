@@ -2,9 +2,9 @@
 layout: default
 ---
 
-## Testing Integration Through MobilePay Vendor App
+## Verification in SandBox
 
-In order to test your integration you may use the MobilePay Vendor App which is targeted towards our SandBox environment. Products purchased through this app will also hit your SandBox environment.
+In order to test your integration you may use the MobilePay Vendor App which is targeted towards MobilePay SandBox environment. Products purchased through this app will also hit the Sellers SandBox environment.
 
 ### Step 1: Download MobilePay Vendor App
 First you must download the MobilePay Vendor App for your desired `Market` and Mobile OS.
@@ -17,7 +17,7 @@ First you must download the MobilePay Vendor App for your desired `Market` and M
 |`FI`         |iOS            | [Link](https://dbg.tpa.io/p/nAJ3Sjmr6plQqOKl1vyR) |
 
 ### Step 2: Sign in
-Use the following Users to sign in to MobilePay Vendor app
+Use the following login details to sign in to MobilePay Vendor app
 
 |Market       | Phone number  | Verification code (OTP) | Pin | SSN
 |-------------|---------------|-------------------------------------------|
@@ -33,4 +33,4 @@ Access the Marketplace through the tab in MobilePay to browse your added product
 
 After the products have been added please verify that they behave as expected regarding texts, how they can be configured, their prices and also VAT.
 
-Test integration by purchasing one of your products using one User and giving it to the other User in the same `Market`. Once the product has been delivered to the recipient, your endpoints should be called.
+Test integration by purchasing one of your products using one User and giving it to the other User in the same `Market`. While delivering the product to the recipient, your endpoints will be called.
