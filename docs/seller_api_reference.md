@@ -61,8 +61,7 @@ GET seller-base-url/orders/{orderReference}
 |`expiryDate`|||`date`| **Required.** The exact date and time when the product can no longer be used |
 |`companyLogoUrl`|||`string`| **Required.** Logo portraying the company who is providing the product. W: 60px H: 292px. Should have transparent background. File type should be png. |
 |`coupons`|||`object[]`| **Required.** List of coupons that the User should received upon purchase of the product. |
-||`completelyUsed`||`boolean`|**Required.** Should be `true` if the User has fully used the coupon and it no longer holds any value. Otherwise this should be `false`. |
-||`remainingAmount`||`decimal`| **Required for `StepAmount` `Products`.** Should contain the amount left on the gift card. |
+||`reference`||`string`| **Required.** A unique id representing this coupon chosen by `Seller`. |
 ||`copyToClipboardValue`||`string`| A string that will be copied to the Users clipboard upon tapping a button. Ideal for codes that need to be entered on websites or apps from the User's phone. |
 ||`localizations`||`object[]`| **Required.** Translations of texts displayed on each coupon. |
 |||`language`|`string`| **Required** Language of the given localization. `DA_DK`, `EN_DK`, `FI_FI` or `EN_FI`. | 
@@ -87,10 +86,9 @@ HTTP 200 OK
   "companyLogoUrl": "https://gogift.dk/matas.png",
   "coupons": [
     {
-      "completelyUsed": false,
-      "remainingAmount": 230.56,
+      "reference": "sgze24905962",
       "copyToClipboardValue": "23230923",
-      "couponDetails": [
+      "localizations": [
         {
           "language": "DA_DK",
           "title": "Gavekort",
@@ -115,6 +113,77 @@ HTTP 200 OK
         },
       ]     
     }
+  ]
+}
+```
+
+#### Get Order Status
+
+A desired feature of the GiftCards sold on the MobilePay Marketplace is that the User can see the remaining balance for monetary gift cards, and also that gift cards are automatically marked as used. As the gift cards users buy can each contain multiple coupons, we need a status per coupon.
+This endpoint returns a list of status for each of the coupons for each of the provided `Orders`.
+
+To avoid issues with maximum url lengths, we use `POST` for this endpoint, and keep the list of `orderReferences` in the request body, even though it behaves exactly like a `GET`. 
+
+```
+POST seller-base-url/orders/status
+```
+
+##### <a id="get-coupon-status-response" name="get_coupon_status_object"/> Response
+
+|Parameter             |Sub Parameter |Sub Parameter  |Type        |Description |
+|----------------------|--------------|---------------|------------|------------|
+|`orders`|||`object[]`|**Required.** List of orders. |
+||`orderReference`||`string`|**Required.** Reference to the `Order` as provided by `Seller`. |
+||`couponStatus`||`object[]`| **Required.** List of status for the coupons. |
+|||`reference`|`string`|**Required.** The unique id of the `Coupon` which the status relates to. |
+|||`completelyUsed`|`boolean`|**Required.** Should be `true` if the User has fully used the `Coupon` and it no longer holds any value. Otherwise this should be `false`. |
+|||`remainingAmount`|`decimal`| Should contain the amount left on the `Coupon` if it has a monetary value. |
+
+##### Example
+Request
+
+```json
+{
+  "orderReferences": ["jf23dDLdo204mcxpaoe24948djO", "Rxdp24mfcma84jdalwp0294dwld"]
+}
+```
+
+Response
+
+```
+HTTP 200 OK
+```
+```json
+{
+  "orders": [
+    {
+      "reference": "Rxdp24mfcma84jdalwp0294dwld",
+      "couponStatus": [
+        {
+          "reference": "kdgb242352352",
+          "completelyUsed": false,
+          "remainingAmount": 230.56
+        },
+        {
+          "reference": "mvoe235288964",
+          "completelyUsed": true,
+          "remainingAmount": 0
+        }
+      ]
+    },
+    {
+      "reference": "jf23dDLdo204mcxpaoe24948djO",
+      "couponStatus": [
+        {
+          "reference": "sgze24905962",
+          "completelyUsed": true
+        },
+        {
+          "reference": "pepfa0093986",
+          "completelyUsed": true
+        }
+      ]
+    },
   ]
 }
 ```
