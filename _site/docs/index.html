@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Overview | MobilePay-Marketplace</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Overview" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/docs/" />
+<meta property="og:url" content="http://localhost:4000/docs/" />
+<meta property="og:site_name" content="MobilePay-Marketplace" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/docs/","headline":"Overview","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=904b86e8f2ef45dac825e97d4cddbb71048b492d">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:4000/">MobilePay-Marketplace</a></h1>
+      
+
+      <h1 id="overview">Overview</h1>
+<p>This document explains how to make a technical integration to the <strong>MobilePay Marketplace</strong> product as a Seller on the Marketplace. Before starting please contact MobilePay in order to gain access to the MobilePay Developer Portal.</p>
+
+<h2 id="-onboarding-a-marketplace-seller"><a name="marketplaceseller_onboarding"></a> Onboarding a Marketplace Seller</h2>
+
+<ol>
+  <li>
+    <p><strong>Log-in on the developer portal.</strong> Go to <a href="https://sandbox-developer.mobilepay.dk/">Sandbox developer portal</a> and log in with your credentials.</p>
+  </li>
+  <li>
+    <p><strong>Create an app in the developer portal.</strong> Go to My Apps &gt; Create new App to register a new application. You need to supply the <code class="language-plaintext highlighter-rouge">x-ibm-client-id</code> and <code class="language-plaintext highlighter-rouge">x-ibm-client-secret</code> when calling APIs. You should always store the two values in a secure location, and never reveal them publicly. More details about the usage of values below in the authentication section. You will need to create multiple apps per Market. For example one app to be used for adding products to the <code class="language-plaintext highlighter-rouge">DK</code> market and another app to be used for adding products to the <code class="language-plaintext highlighter-rouge">FI</code> market.</p>
+  </li>
+  <li>
+    <p><strong>Provide your info to MobilePay.</strong> Hand over your <code class="language-plaintext highlighter-rouge">x-ibm-client-id</code> to your contact at MobilePay through secure communication. This will be used to associate your endpoint calls to your organization. Additionally, please hand over <code class="language-plaintext highlighter-rouge">Company name</code>, <code class="language-plaintext highlighter-rouge">Business registration number</code>, <code class="language-plaintext highlighter-rouge">Address</code>, <code class="language-plaintext highlighter-rouge">Purchase terms url</code> for each Market as well as the base url that MobilePay needs to call to access your systems.</p>
+  </li>
+  <li><strong>Subscribe the app to APIs.</strong>  Go to <a href="https://sandbox-developer.mobilepay.dk/product">APIs</a> and subscribe to the following API:
+    <ul>
+      <li>Marketplace Seller</li>
+    </ul>
+  </li>
+  <li><strong>Read API documentation.</strong></li>
+</ol>
+
+<h2 id="-authentication-of-api-requests"><a name="authenticationapi"></a> Authentication of API requests</h2>
+<p>The MobilePay API Gateway is ensuring the authentication of all MobilePay Marketplace API requests. All API requests must be made over HTTPS. API requests without authentication will also fail.</p>
+
+<p>To be able to use and connect to the API there are a few requirements. In order to authenticate to the API, all requests to the API must contain the following two headers containing the values from above:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">x-ibm-client-id</code></li>
+  <li><code class="language-plaintext highlighter-rouge">x-ibm-client-secret</code></li>
+</ol>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  </body>
+</html>

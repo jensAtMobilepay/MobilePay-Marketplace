@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Seller API Reference | MobilePay-Marketplace</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="Seller API Reference" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/docs/seller_api_reference.html" />
+<meta property="og:url" content="http://localhost:4000/docs/seller_api_reference.html" />
+<meta property="og:site_name" content="MobilePay-Marketplace" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/docs/seller_api_reference.html","headline":"Seller API Reference","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=904b86e8f2ef45dac825e97d4cddbb71048b492d">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:4000/">MobilePay-Marketplace</a></h1>
+      
+
+      <h2 id="seller-api-reference">Seller API Reference</h2>
+
+<p>This page contains information about the API that Sellers must provide which will be called by MobilePay services to register new Orders and to query details about purchased products.</p>
+
+<h3 id="-order"><a name="order"></a> Order</h3>
+
+<h4 id="create-order">Create Order</h4>
+
+<p>When a <code class="language-plaintext highlighter-rouge">Product</code> is delivered to a User, MobilePay will call the below endpoint to let you register the <code class="language-plaintext highlighter-rouge">Order</code> on your end.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST seller-base-url/orders
+</code></pre></div></div>
+
+<h5 id="-input"><a id="create-order-request" name="create_order_object"></a> Input</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Sub Parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">orderId</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">guid</code></td>
+      <td><strong>Required.</strong> Id representing the order. You must be idempotent on this value. If you receive multiple requests with the same <code class="language-plaintext highlighter-rouge">orderId</code> it should only end up with 1 <code class="language-plaintext highlighter-rouge">Order</code> being created and the responses to the two requests should be identical.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">productId</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">guid</code></td>
+      <td><strong>Required.</strong> Id of the product that has been purchased. Same value as returned after creating a new <code class="language-plaintext highlighter-rouge">Product</code>. <a href="api_reference#add_product">See endpoint</a>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">productReference</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong>  Seller’s internal reference of the product that has been purchased. Same value as provided when creating a new <code class="language-plaintext highlighter-rouge">Product</code>. <a href="api_reference#add_product">See endpoint</a>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">productConfigurationValue</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> The configured value of the product. If product configuration type is <code class="language-plaintext highlighter-rouge">StepAmount</code> then this value is the monetary value of the gift card, otherwise if it is <code class="language-plaintext highlighter-rouge">StepQuantity</code> then this is the quantity of the product that the User selected.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="example">Example</h5>
+<p>Request</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"orderId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fc6b8155-624a-4d10-9aad-c1df10809913"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"productId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8f845040-c851-b2b2-2cdd-2cacb12006d3"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"productReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Uy9C9PB9kqU8M2tep5MAA"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"productConfigurationValue"</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Response</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP 200 OK
+</code></pre></div></div>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"orderReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UxKD92jdNDjapqld"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="get-order">Get Order</h4>
+
+<p>When an <code class="language-plaintext highlighter-rouge">Order</code> has been created by MobilePay calling your endpoint as described above, MobilePay will at some point query the created resource for getting details about the purchased product to be shown to the user, e.g. bar codes.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET seller-base-url/orders/{orderReference}
+</code></pre></div></div>
+
+<h5 id="-response"><a id="get-order-response" name="get_order_object"></a> Response</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Sub Parameter</th>
+      <th>Sub Parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">expiryDate</code></td>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">date</code></td>
+      <td><strong>Required.</strong> The exact date and time when the product can no longer be used</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">companyLogoUrl</code></td>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Logo portraying the company who is providing the product. W: 60px H: 292px. Should have transparent background. File type should be png.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">coupons</code></td>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object[]</code></td>
+      <td><strong>Required.</strong> List of coupons that the User should received upon purchase of the product.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">id</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> A unique id representing this coupon chosen by <code class="language-plaintext highlighter-rouge">Seller</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">copyToClipboardValue</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>A string that will be copied to the Users clipboard upon tapping a button. Ideal for codes that need to be entered on websites or apps from the User’s phone.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">localizations</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object[]</code></td>
+      <td><strong>Required.</strong> Translations of texts displayed on each coupon.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">language</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required</strong> Language of the given localization. <code class="language-plaintext highlighter-rouge">DA_DK</code>, <code class="language-plaintext highlighter-rouge">EN_DK</code>, <code class="language-plaintext highlighter-rouge">FI_FI</code> or <code class="language-plaintext highlighter-rouge">EN_FI</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">title</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required</strong> Title of the coupon.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">subtitle</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required</strong> Subtitle of the coupon.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">elementImageUrl</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Url to an image of the bar code used to redeem the coupon. If <code class="language-plaintext highlighter-rouge">elementHeaderText</code> is set, then this must be <code class="language-plaintext highlighter-rouge">null</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">elementHeaderText</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Header text used to describe the type of redeem code, e.g. ‘Rabatkode’. If <code class="language-plaintext highlighter-rouge">elementImageUrl</code>is set, then this must be <code class="language-plaintext highlighter-rouge">null</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">elementText1</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Line 1 describing the redeem code, e.g. ‘91823175’.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">elementText2</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Line 2 describing the redeem code, e.g. ‘Pin: 3842’.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">howToUseTitle</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Title for the how to use section.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">howToUseExplanation</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Explanation for how to use the product, displayed in the how to use section.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="example-1">Example</h5>
+<p>Response</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP 200 OK
+</code></pre></div></div>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"expiryDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2020-09-03T12:51:56+00:00"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"companyLogoUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://gogift.dk/matas.png"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"coupons"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jf23dDLdo204mcxpaoe24948djO"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"copyToClipboardValue"</span><span class="p">:</span><span class="w"> </span><span class="s2">"23230923"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"localizations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DA_DK"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gavekort"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"subtitle"</span><span class="p">:</span><span class="w"> </span><span class="s2">"50 kr. til Matas"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementImageUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://gogift.dk/barcodes/23912309"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementHeaderText"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementText1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"23230923"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementText2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pin-kode: 3232"</span><span class="p">,</span><span class="w"> 
+          </span><span class="nl">"howToUseTitle"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sådan bruger du dit gavekort"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"howToUseExplanation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Få ekspedienten til at scanne dit gavekort ved kassen."</span><span class="p">,</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EN_DK"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gift Card"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"subtitle"</span><span class="p">:</span><span class="w"> </span><span class="s2">"50 kr. for Matas"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementImageUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://gogift.dk/barcodes/23912309"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementHeaderText"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementText1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"23230923"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"elementText2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pin-code: 3232"</span><span class="p">,</span><span class="w"> 
+          </span><span class="nl">"howToUseTitle"</span><span class="p">:</span><span class="w"> </span><span class="s2">"How to use your gift card"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"howToUseExplanation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Make the cashier scan your gift card by the register."</span><span class="p">,</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+      </span><span class="p">]</span><span class="w">     
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="get-coupon-status">Get Coupon Status</h4>
+
+<p>A desired feature of the GiftCards sold on the MobilePay Marketplace is that the User can see the remaining balance for monetary gift cards, and also that gift cards are automatically marked as used. As the gift cards users buy each can contain multiple coupons, we need a status per coupon.
+This endpoint returns a list of status for each of the coupons for each of the <code class="language-plaintext highlighter-rouge">Orders</code> in the given list.</p>
+
+<p>To avoid issues with maximum url lengths, we use <code class="language-plaintext highlighter-rouge">POST</code> for this endpoint, and keep the list of <code class="language-plaintext highlighter-rouge">orderReferences</code> in the request body, even though it behaves exactly like a <code class="language-plaintext highlighter-rouge">GET</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST seller-base-url/coupons/status
+</code></pre></div></div>
+
+<h5 id="-response-1"><a id="get-coupon-status-response" name="get_coupon_status_object"></a> Response</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Sub Parameter</th>
+      <th>Sub Parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">orders</code></td>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object[]</code></td>
+      <td><strong>Required.</strong> List of orders.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">orderReference</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Reference to the <code class="language-plaintext highlighter-rouge">Order</code> as provided by <code class="language-plaintext highlighter-rouge">Seller</code>.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">status</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object[]</code></td>
+      <td><strong>Required.</strong> List of status for the coupons.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">couponId</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> The unique id of the <code class="language-plaintext highlighter-rouge">Coupon</code> which the status relates to.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">completelyUsed</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+      <td><strong>Required.</strong> Should be <code class="language-plaintext highlighter-rouge">true</code> if the User has fully used the <code class="language-plaintext highlighter-rouge">Coupon</code> and it no longer holds any value. Otherwise this should be <code class="language-plaintext highlighter-rouge">false</code>.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">remainingAmount</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">decimal</code></td>
+      <td>Should contain the amount left on the <code class="language-plaintext highlighter-rouge">Coupon</code> if it has a monetary value.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="example-2">Example</h5>
+<p>Request</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"orderReferences"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"jf23dDLdo204mcxpaoe24948djO"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Rxdp24mfcma84jdalwp0294dwld"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Response</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP 200 OK
+</code></pre></div></div>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"orders"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"orderReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rxdp24mfcma84jdalwp0294dwld"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"coupons"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"kdgb242352352415"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"completelyUsed"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"remainingAmount"</span><span class="p">:</span><span class="w"> </span><span class="mf">230.56</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mvoe2352889643"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"completelyUsed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"remainingAmount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"orderReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jf23dDLdo204mcxpaoe24948djO"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"coupons"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sgze24905962"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"completelyUsed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pepfa0093984820355"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"completelyUsed"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  </body>
+</html>

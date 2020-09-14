@@ -43,7 +43,8 @@ HTTP 200 OK
 ```
 ```json
 {
-  "orderReference": "UxKD92jdNDjapqld"
+  "orderReference": "UxKD92jdNDjapqld",
+  "invoiceNumber": 12345
 }
 ```
 

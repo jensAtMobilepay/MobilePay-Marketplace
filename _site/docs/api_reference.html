@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>MobilePay API Reference | MobilePay-Marketplace</title>
+<meta name="generator" content="Jekyll v3.9.0" />
+<meta property="og:title" content="MobilePay API Reference" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="http://localhost:4000/docs/api_reference.html" />
+<meta property="og:url" content="http://localhost:4000/docs/api_reference.html" />
+<meta property="og:site_name" content="MobilePay-Marketplace" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/docs/api_reference.html","headline":"MobilePay API Reference","@type":"WebPage","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=904b86e8f2ef45dac825e97d4cddbb71048b492d">
+  </head>
+  <body>
+    <div class="container-lg px-3 my-5 markdown-body">
+      
+      <h1><a href="http://localhost:4000/">MobilePay-Marketplace</a></h1>
+      
+
+      <h2 id="mobilepay-api-reference">MobilePay API Reference</h2>
+
+<p>This page contains information about the MobilePay Marketplace API that Sellers can use to add and remove their products from the Marketplace.</p>
+
+<h3 id="-product"><a name="product"></a> Product</h3>
+
+<h4 id="-add-product"><a name="add_product"></a> Add Product</h4>
+
+<p>You can add a product to the Marketplace. After a new product has been added, the product will need to be manually added by a MobilePay Marketplace Admin before it will show up on the Marketplace in the MobilePay App.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>POST api/v1/marketplace/seller/products
+</code></pre></div></div>
+
+<h5 id="-input"><a id="add-product-request" name="add_product_object"></a> Input</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Sub Parameter</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">sellersProductReference</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Reference to the product in ther Seller’s internal system.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">productConfiguration</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object</code></td>
+      <td><strong>Required.</strong> Options for how the User can configure the Product before buying it.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">type</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Type of product configuration. Either <code class="language-plaintext highlighter-rouge">StepAmount</code> for gift cards with a specific monetary value allowing User to control the value on the gift card, or <code class="language-plaintext highlighter-rouge">StepQuantity</code> to instead let the User purchase multiple of the fixed-value product.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">minimum</code></td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> The minimum amount that the monetary gift card can be on, or the minium quantity that the User can buy depending on <code class="language-plaintext highlighter-rouge">type</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">maximum</code></td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> The maximum amount that the monetary gift card can be on, or the maximum quantity that the User can buy depending on <code class="language-plaintext highlighter-rouge">type</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">default</code></td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> The default amount that the monetary gift card is set to for the User, or the default quantity depending on <code class="language-plaintext highlighter-rouge">type</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">stepSize</code></td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> The step size of increments or decrements in User’s chosen amount or quantity based on <code class="language-plaintext highlighter-rouge">type</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">pricePerUnit</code></td>
+      <td><code class="language-plaintext highlighter-rouge">decimal</code></td>
+      <td><strong>Required.</strong> The price per product in local market currency. For <code class="language-plaintext highlighter-rouge">StepAmount</code> this should be set to <code class="language-plaintext highlighter-rouge">1</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">vatPerUnit</code></td>
+      <td><code class="language-plaintext highlighter-rouge">decimal</code></td>
+      <td><strong>Required.</strong> The VAT per product in local market currency. For <code class="language-plaintext highlighter-rouge">StepAmount</code> this should be set to <code class="language-plaintext highlighter-rouge">0</code>.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">localizations</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object[]</code></td>
+      <td><strong>Required.</strong> List of product text localizations. Must contain required languages as stated under Market.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">language</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string(5)</code></td>
+      <td><strong>Required.</strong> Language of the given localization. <code class="language-plaintext highlighter-rouge">DA_DK</code>, <code class="language-plaintext highlighter-rouge">EN_DK</code>, <code class="language-plaintext highlighter-rouge">FI_FI</code> or <code class="language-plaintext highlighter-rouge">EN_FI</code>.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">title</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Title of the product.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">subtitle</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Subtitle of the product.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">descriptionBuyer</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Description of the product shown to the buyer.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">descriptionRecipient</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Description of the product shown to the recipient of the product.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">merchantProductUrl</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Url to the product on the Seller’s website.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">coverImages</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object[]</code></td>
+      <td><strong>Required.</strong> List of images to be used as cover images for the product</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x2Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 720px H: 450px</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x3Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 1080px H: 675px</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x4Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 1440px H: 900px</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">tileImage</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object</code></td>
+      <td><strong>Required.</strong> Image to be used on the product tiles on the Marketplace</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x2Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 384px H: 256px</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x3Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 576px H: 384px</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x4Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 768px H: 512px</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">productImage</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object</code></td>
+      <td><strong>Required.</strong> Image to be shown as small illustration of the product</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x2Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 50px H: 20px</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x3Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 75px H: 50px</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">x4Url</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><strong>Required.</strong> Url to image in resolution: W: 100px H: 60px</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">validityFromPurchase</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">object</code></td>
+      <td><strong>Required.</strong> Period that the product is valid from purchase date. Only one of the values can be set, the rest should be 0.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">days</code></td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> Validty from purchase date in days.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">months</code></td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> Validty from purchase date in months.</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">years</code></td>
+      <td><code class="language-plaintext highlighter-rouge">integer</code></td>
+      <td><strong>Required.</strong> Validty from purchase date in years.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">campaignStartDate</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">date</code></td>
+      <td>A specific date and time when the product is allowed to be sold. If not provided, the <code class="language-plaintext highlighter-rouge">Product</code> may be made available instantly.</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">campaignEndDate</code></td>
+      <td> </td>
+      <td><code class="language-plaintext highlighter-rouge">date</code></td>
+      <td>A specific date and time when the product is no longer allowed to be sold. If not provided, the <code class="language-plaintext highlighter-rouge">Product</code> will continue to be available until manually removed.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Note:</strong> Products cannot be updated at the moment. Instead the old product should be deleted and a new one created.
+</div>
+
+<h5 id="example">Example</h5>
+<p>Request</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+ </span><span class="nl">"sellersProductReference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"456879809+"</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"productConfiguration"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+ </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"StepQuantity"</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"maximum"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"minimum"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"default"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"stepSize"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"pricePerUnit"</span><span class="p">:</span><span class="w"> </span><span class="mf">300.00</span><span class="p">,</span><span class="w">
+ </span><span class="nl">"vatPerUnit"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.75</span><span class="w">
+ </span><span class="p">},</span><span class="w">
+ </span><span class="nl">"localizations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DA_DK"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Brunch menu for 2 på Edwin Rahrs Café"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"subtitle"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lækker og forførende brunchoplevelse i smukke omgivelser"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"descriptionBuyer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Modtager af gavekortet kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:</span><span class="se">\n\t</span><span class="s2">• Rundstykker</span><span class="se">\n\t</span><span class="s2">• Croissanter</span><span class="se">\n\t</span><span class="s2">• Nutellamader</span><span class="se">\n\t</span><span class="s2">• Der er altid gratis kaffe på kanden."</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"descriptionRecipient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tillykke med dit gavekort til Edwin Rahrs Café. Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Du kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:</span><span class="se">\n\t</span><span class="s2">• Rundstykker</span><span class="se">\n\t</span><span class="s2">• Croissanter</span><span class="se">\n\t</span><span class="s2">• Nutellamader</span><span class="se">\n\t</span><span class="s2">• Der er altid gratis kaffe på kanden."</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"merchantProductUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.youtube.com/watch?v=dQw4w9WgXcQ"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EN_DK"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Brunch for 2 on Edwin Rahrs Café"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"subtitle"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Delicious and tempting brunch experience in a beautiful environment"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"descriptionBuyer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Congrats med dit gavekort til Edwin Rahrs Café. Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Du kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:</span><span class="se">\n\t</span><span class="s2">• Rundstykker</span><span class="se">\n\t</span><span class="s2">• Croissanter</span><span class="se">\n\t</span><span class="s2">• Nutellamader</span><span class="se">\n\t</span><span class="s2">• Der er altid gratis kaffe på kanden"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"descriptionRecipient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Congrats med dit gavekort til Edwin Rahrs Café. Læn dig tilbage og nyd vores lækre menu, der omfatter knasende sprødt brød og lækre juicer. Du kan frit vælge tidspunkt og valgfri marmelade. Derudover serverer vi:</span><span class="se">\n\t</span><span class="s2">• Rundstykker</span><span class="se">\n\t</span><span class="s2">• Croissanter</span><span class="se">\n\t</span><span class="s2">• Nutellamader</span><span class="se">\n\t</span><span class="s2">• Der er altid gratis kaffe på kanden"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"merchantProductUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.youtube.com/watch?v=dQw4w9WgXcQ"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+ </span><span class="p">],</span><span class="w">
+ </span><span class="nl">"coverImages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"x2Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"x3Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"x4Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+ </span><span class="p">],</span><span class="w">
+ </span><span class="nl">"tileImage"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"x2Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"x3Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"x4Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="w">
+ </span><span class="p">},</span><span class="w">
+ </span><span class="nl">"productImage"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"x2Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"x3Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"x4Url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://imgshare.io/images/2020/08/13/popcorn-cover.png"</span><span class="w">
+ </span><span class="p">},</span><span class="w">
+ </span><span class="nl">"validityFromPurchase"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"days"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"months"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"years"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+ </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Response</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP 200 OK
+</code></pre></div></div>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"productId"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"63679ab7-cc49-4f75-80a7-86217fc105ea"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP 409 Conflict
+</code></pre></div></div>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"232"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Localizations must contain required translations"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="get-products">Get Products</h4>
+
+<p>You can query a specific product that you have added to the Marketplace:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET api/v1/marketplace/seller/products/{productId}
+</code></pre></div></div>
+
+<p>Or list all products owned by you:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET api/v1/marketplace/seller/products
+</code></pre></div></div>
+
+<p>Response</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP 200 OK
+</code></pre></div></div>
+<div class="note">
+  <strong>Note:</strong> Response model is not fixed and is only meant for debugging and verification. If you would like to use this programatically, let your contact at MobilePay know.
+</div>
+
+<h4 id="remove-product">Remove Product</h4>
+
+<p>You can remove a product from the Marketplace. As Users can schedule purchases out in the future, expect that your removed product will still be purchased and used after removal. Removing it from the Marketplace simply means no new Users can find and purchase the product when browsing the Marketplace.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DELETE api/v1/marketplace/seller/products/{productId}
+</code></pre></div></div>
+<h5 id="example-1">Example</h5>
+
+<p>Response</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HTTP 200 OK
+</code></pre></div></div>
+
+<h3 id="-general"><a name="general"></a> General</h3>
+
+<h4 id="market">Market</h4>
+
+<p>The MobilePay Marketplace operates with different Markets, one for Denmark (<code class="language-plaintext highlighter-rouge">DK</code>) and one for Finland (<code class="language-plaintext highlighter-rouge">FI</code>). Products are not shared across Markets. All prices are in <code class="language-plaintext highlighter-rouge">DKK</code> for <code class="language-plaintext highlighter-rouge">DK</code> market and <code class="language-plaintext highlighter-rouge">EUR</code> for <code class="language-plaintext highlighter-rouge">FI</code> market.</p>
+
+<h4 id="localizations">Localizations</h4>
+<p>Some requests feature a <code class="language-plaintext highlighter-rouge">localizations</code> list. This list must contain translations in the following languages for their respective market as shown below.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">DK</code> market
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">DA_DK</code>: Translations in Danish language</li>
+      <li><code class="language-plaintext highlighter-rouge">EN_DK</code>: Translations in English language</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">FI</code> market
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">FI_FI</code>: Translations in Finnish language</li>
+      <li><code class="language-plaintext highlighter-rouge">EN_FI</code>: Translations in English language</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="currencies">Currencies</h4>
+<p>Currencies are determined automatically by the Market.</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">DK</code> Market uses <code class="language-plaintext highlighter-rouge">DKK</code></li>
+  <li><code class="language-plaintext highlighter-rouge">FI</code> Market uses <code class="language-plaintext highlighter-rouge">EUR</code></li>
+</ul>
+
+<h4 id="types">Types</h4>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">date</code> contains both date and time in ISO 8601 format including the UTC offset to avoid any confusions regarding time zones - e.g. <code class="language-plaintext highlighter-rouge">2020-09-03T12:51:56+00:00</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">decimal</code> can have up to 2 decimals with <code class="language-plaintext highlighter-rouge">.</code> as seperator - e.g. <code class="language-plaintext highlighter-rouge">12.25</code>.</li>
+</ul>
+
+
+      
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.0/anchor.min.js" integrity="sha256-lZaRhKri35AyJSypXXs4o6OPFTbTmUoltBbDCbdzegg=" crossorigin="anonymous"></script>
+    <script>anchors.add();</script>
+    
+  </body>
+</html>
