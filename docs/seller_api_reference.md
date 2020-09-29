@@ -126,7 +126,7 @@ This endpoint returns a list of status for each of the coupons for each of the p
 To avoid issues with maximum url lengths, we use `POST` for this endpoint, and keep the list of `orderReferences` in the request body, even though it behaves exactly like a `GET`. 
 
 ```
-POST seller-base-url/orders/status
+POST seller-base-url/orders/{orderReference}/status
 ```
 
 ##### <a id="get-coupon-status-response" name="get_coupon_status_object"/> Response
@@ -163,11 +163,13 @@ HTTP 200 OK
       "couponStatus": [
         {
           "reference": "kdgb242352352",
+          "hasStatus": true,
           "completelyUsed": false,
           "remainingAmount": 230.56
         },
         {
           "reference": "mvoe235288964",
+          "hasStatus": true,
           "completelyUsed": true,
           "remainingAmount": 0
         }
@@ -178,10 +180,11 @@ HTTP 200 OK
       "couponStatus": [
         {
           "reference": "sgze24905962",
-          "completelyUsed": true
+          "hasStatus": false
         },
         {
           "reference": "pepfa0093986",
+          "hasStatus": true,
           "completelyUsed": true
         }
       ]
