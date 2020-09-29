@@ -137,6 +137,7 @@ POST seller-base-url/orders/status
 ||`orderReference`||`string`|**Required.** Reference to the `Order` as provided by `Seller`. |
 ||`couponStatus`||`object[]`| **Required.** List of status for the coupons. |
 |||`reference`|`string`|**Required.** The unique id of the `Coupon` which the status relates to. |
+|||`hasStatus`|`boolean`|**Required.** Should be `false` if the given coupon will not have its `completelyUsed` and `remainingAmount` fields updated and `true` otherwise. |
 |||`completelyUsed`|`boolean`|**Required.** Should be `true` if the User has fully used the `Coupon` and it no longer holds any value. Otherwise this should be `false`. |
 |||`remainingAmount`|`decimal`| Should contain the amount left on the `Coupon` if it has a monetary value. |
 
