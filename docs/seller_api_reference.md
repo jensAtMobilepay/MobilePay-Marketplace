@@ -126,7 +126,7 @@ This endpoint returns a list of status for each of the coupons for each of the p
 To avoid issues with maximum url lengths, we use `POST` for this endpoint, and keep the list of `orderReferences` in the request body, even though it behaves exactly like a `GET`. 
 
 ```
-POST seller-base-url/orders/{orderReference}/status
+POST seller-base-url/orders/status
 ```
 
 ##### <a id="get-coupon-status-response" name="get_coupon_status_object"/> Response
