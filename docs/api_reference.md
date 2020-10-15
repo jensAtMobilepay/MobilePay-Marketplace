@@ -44,10 +44,7 @@ POST api/v1/marketplace/seller/products
 ||`x2Url`|`string`|**Required.** Url to image in resolution: W: 384px H: 256px |
 ||`x3Url`|`string`|**Required.** Url to image in resolution: W: 576px H: 384px |
 ||`x4Url`|`string`|**Required.** Url to image in resolution: W: 768px H: 512px |
-|`productImage`||`object`|**Required.** Image to be shown as small illustration of the product |
-||`x2Url`|`string`|**Required.** Url to image in resolution: W: 50px H: 20px |
-||`x3Url`|`string`|**Required.** Url to image in resolution: W: 75px H: 50px |
-||`x4Url`|`string`|**Required.** Url to image in resolution: W: 100px H: 60px |
+|`productImageUrl`||`string`|**Required.** Image to be shown as small illustration of the product in resolution: W: 108px H: 73px|
 |`validityFromPurchase`||`object`|**Required.** Period that the product is valid from purchase date. Only one of the values can be set, the rest should be 0.|
 ||`days`|`integer`|**Required.** Validty from purchase date in days.|
 ||`months`|`integer`|**Required.** Validty from purchase date in months. |
@@ -103,11 +100,7 @@ Request
     "x3Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
     "x4Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png"
  },
- "productImage": {
-    "x2Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
-    "x3Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
-    "x4Url": "https://imgshare.io/images/2020/08/13/popcorn-cover.png"
- },
+ "productImageUrl": "https://imgshare.io/images/2020/08/13/popcorn-cover.png",
  "validityFromPurchase": {
     "days": 0,
     "months": 0,
