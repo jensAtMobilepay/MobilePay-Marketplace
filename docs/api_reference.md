@@ -152,9 +152,33 @@ HTTP 200 OK
   <strong>Note:</strong> Response model is not fixed and is only meant for debugging and verification. If you would like to use this programatically, let your contact at MobilePay know.
 </div>
 
-#### Remove Product
+#### Update Product
 
-You can remove a product from the Marketplace. As Users can schedule purchases out in the future, expect that your removed product will still be purchased and used after removal. Removing it from the Marketplace simply means no new Users can find and purchase the product when browsing the Marketplace.
+You can hide a product from the Marketplace. As Users can schedule purchases out in the future, expect that your disabled product will still be purchased and used after being disabled. Disabling it on the Marketplace simply means no new Users can find and purchase the product when browsing the Marketplace.
+
+```
+PATCH api/v1/marketplace/seller/products/{productId}
+```
+|Parameter             |Type        |Description |
+|----------------------|------------|------------|
+|`disabled`       |`boolean`| Whether or not the product should be disabled and not be shown on the marketplace |
+
+##### Example
+Request
+
+```json
+{
+    "disabled": "true"
+}
+```
+
+Response
+
+```
+HTTP 200 OK
+```
+
+#### Delete Product
 
 ```
 DELETE api/v1/marketplace/seller/products/{productId}
@@ -166,6 +190,9 @@ Response
 ```
 HTTP 200 OK
 ```
+<div class="note">
+  <strong>Note:</strong> This endpoint should only be used to clean up products when used for automated testing. The endpoint will <strong>not</strong> be available in the production environment.
+</div>
 
 ### <a name="general"/> General
 
