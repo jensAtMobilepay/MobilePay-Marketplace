@@ -159,8 +159,11 @@ You can hide a product from the Marketplace. As Users can schedule purchases out
 ```
 PATCH api/v1/marketplace/seller/products/{productId}
 ```
+
+##### <a id="update-product-request" name="update_product_object"/> Input
+
 |Parameter             |Type        |Description |
-|----------------------|------------|------------|
+|-----------------|------------|------------|
 |`disabled`       |`boolean`| Whether or not the product should be disabled and not be shown on the marketplace |
 
 ##### Example
