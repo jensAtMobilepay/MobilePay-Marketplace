@@ -181,6 +181,23 @@ Response
 HTTP 200 OK
 ```
 
+
+#### Preview product
+
+For testing purposes the following endpoint can be called to instantly add a product to a dummy category. This will only work in Sandbox and not in Production.
+This can be useful for testing how a new product will look visually in the MobilePay app. Use the details from the Verification in SandBox section.
+
+```
+POST api/v1/marketplace/seller/products/preview/{productId}
+```
+##### Example
+
+Response
+
+```
+HTTP 200 OK
+```
+
 #### Delete Product
 
 ```
