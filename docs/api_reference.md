@@ -44,7 +44,7 @@ POST api/v1/marketplace/seller/products
 ||`x2Url`|`string`|**Required.** Url to image in resolution: W: 384px H: 256px |
 ||`x3Url`|`string`|**Required.** Url to image in resolution: W: 576px H: 384px |
 ||`x4Url`|`string`|**Required.** Url to image in resolution: W: 768px H: 512px |
-|`productImageUrl`||`string`|**Required.** Image to be shown as small illustration of the product in resolution: W: 108px H: 73px|
+|`productImageUrl`||`string`|**Required.** Image to be shown as small illustration of the product in resolution: W: 324px H: 219px|
 |`validityFromPurchase`||`object`|**Required.** Period that the product is valid from purchase date. Only one of the values can be set, the rest should be 0.|
 ||`days`|`integer`|**Required.** Validty from purchase date in days.|
 ||`months`|`integer`|**Required.** Validty from purchase date in months. |
