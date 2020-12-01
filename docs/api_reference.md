@@ -238,3 +238,6 @@ Currencies are determined automatically by the Market.
 #### Types
 * `date` contains both date and time in ISO 8601 format including the UTC offset to avoid any confusions regarding time zones - e.g. `2020-09-03T12:51:56+00:00`.
 * `decimal` can have up to 2 decimals with `.` as seperator - e.g. `12.25`.
+
+#### URLs
+* All URLs, for images and other resources, must all be HTTPS

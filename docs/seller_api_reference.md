@@ -68,7 +68,7 @@ GET seller-base-url/orders/{orderReference}
 |||`language`|`string`| **Required** Language of the given localization. `DA_DK`, `EN_DK`, `FI_FI` or `EN_FI`. | 
 |||`title`|`string`| **Required** Title of the coupon. |
 |||`subtitle`|`string`| **Required** Subtitle of the coupon. |
-|||`elementImageUrl`|`string`| Url to an image of the bar code used to redeem the coupon. If `elementHeaderText` is set, then this must be `null`. |
+|||`elementImageUrl`|`string`| Url to an image of the bar code used to redeem the coupon. If `elementHeaderText` is set, then this must be `null`. It is highly important that a user cannot brute force or in any way guess other urls. Ie. they must be random, based on GUIDs or similar. |
 |||`elementHeaderText`|`string`| Header text used to describe the type of redeem code, e.g. 'Rabatkode'. If `elementImageUrl`is set, then this must be `null`. |
 |||`elementText1`|`string`| Line 1 describing the redeem code, e.g. '91823175'. |
 |||`elementText2`|`string`| Line 2 describing the redeem code, e.g. 'Pin: 3842'. |
