@@ -60,7 +60,7 @@ GET seller-base-url/orders/{orderReference}
 |Parameter             |Sub Parameter |Sub Parameter  |Type        |Description |
 |----------------------|--------------|---------------|------------|------------|
 |`expiryDate`|||`date`| **Required.** The exact date and time when the product can no longer be used |
-|`companyLogoUrl`|||`string`| **Required.** Logo portraying the company who is providing the product. H: 60px W: 280px. Should have transparent background. File type should be png. |
+|`companyLogoUrl`|||`string`| **Required.** Logo portraying the company who is providing the product. W: 280px H: 60px. Should have transparent background. File type should be png. |
 |`coupons`|||`object[]`| **Required.** List of coupons that the User should received upon purchase of the product. |
 ||`reference`||`string`| **Required.** A unique id representing this coupon chosen by `Seller`. |
 ||`copyToClipboardValue`||`string`| A string that will be copied to the Users clipboard upon tapping a button. Ideal for codes that need to be entered on websites or apps from the User's phone. |
