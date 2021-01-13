@@ -166,6 +166,8 @@ PATCH api/v1/marketplace/seller/products/{productId}
 |-----------------|------------|------------|
 |`disabled`       |`boolean`| Whether or not the product should be disabled and not be shown on the marketplace |
 
+Furthermore, you can PATCH the same fields as for <strong>Create Product</strong>, except `productConfiguration`.
+
 ##### Example
 Request
 
