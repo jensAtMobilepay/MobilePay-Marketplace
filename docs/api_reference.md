@@ -45,11 +45,11 @@ POST api/v1/marketplace/seller/products
 ||`x3Url`|`string`|**Required.** Url to image in resolution: W: 576px H: 384px |
 ||`x4Url`|`string`|**Required.** Url to image in resolution: W: 768px H: 512px |
 |`productImageUrl`||`string`|**Required.** Image to be shown as small illustration of the product in resolution: W: 324px H: 219px|
-|`validityFromPurchase`||`object`|**Required if `validityFixedDate` is not given.**  Period that the product is valid from purchase date. Only one of the values can be set, the rest should be 0.|
+|`validityFromPurchase`||`object`|**Required if** `validityFixedDate` **is not given.**  Period that the product is valid from purchase date. Only one of the values can be set, the rest should be 0.|
 ||`days`|`integer`|**Required.** Validty from purchase date in days.|
 ||`months`|`integer`|**Required.** Validty from purchase date in months. |
 ||`years`|`integer`|**Required.** Validty from purchase date in years. |
-|`validityFixedDate`|| `date`| **Required if `validityFromPurchase`is not given.** A fixed date where the product will expire no matter what time the product was bought.|
+|`validityFixedDate`|| `date`| **Required if** `validityFromPurchase` **is not given.** A fixed date where the product will expire no matter what time the product was bought. |
 | `campaignStartDate` || `date`| A specific date and time when the product is allowed to be sold. If not provided, the `Product` may be made available instantly. |
 | `campaignEndDate` || `date`| A specific date and time when the product is no longer allowed to be sold. If not provided, the `Product` will continue to be available until manually removed. |
 
