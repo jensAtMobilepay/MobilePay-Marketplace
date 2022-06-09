@@ -131,6 +131,24 @@ HTTP 409 Conflict
 }
 ```
 
+#### Get Active Products
+
+```
+GET api/v1/marketplace/seller/products/active
+```
+
+Response
+
+```
+HTTP 200 OK
+```
+```json
+[{
+    "Id" : "63679ab7-cc49-4f75-80a7-86217fc105ea",
+    "SellersProductReference" : "Scandic/1234567-BH3"
+}]
+```
+
 #### Get Products
 
 You can query a specific product that you have added to the Marketplace:
