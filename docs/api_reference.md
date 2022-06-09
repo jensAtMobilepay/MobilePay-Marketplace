@@ -131,6 +131,38 @@ HTTP 409 Conflict
 }
 ```
 
+#### Get Active Products
+
+```
+GET api/v1/marketplace/seller/products/active
+```
+
+##### <a id="get-order-response" name="get_order_object"/> Response
+
+|Parameter             |Sub Parameter |Type        |Description |
+|----------------------|--------------|------------|------------|
+|`activeProducts`||`object[]`| **Required.** List of active products owned by seller. Empty if nothing is found. |
+||`productId`|`guid`| **Required.**  Id of the product. Same value as returned after creating a new `Product`. <a href="api_reference#add_product">See endpoint</a>.|
+||`sellersProductReference`|`string`| **Required.** Reference to the product in ther Seller's internal system. Same value given when `Product` was added. <a href="api_reference#add_product">See endpoint</a>. |
+
+
+##### Example
+Response
+
+```
+HTTP 200 OK
+```
+```json
+{
+  "activeProducts": [
+    {
+      "productId" : "63679ab7-cc49-4f75-80a7-86217fc105ea",
+      "sellersProductReference": "MP/Matas/ABC-12345"
+    }
+  ]
+}
+```
+
 #### Get Products
 
 You can query a specific product that you have added to the Marketplace:
